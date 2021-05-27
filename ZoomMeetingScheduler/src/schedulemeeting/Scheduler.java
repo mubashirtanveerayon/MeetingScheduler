@@ -1,0 +1,176 @@
+package schedulemeeting;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import database.Database;
+import java.awt.Desktop;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.net.URI;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class Scheduler {
+
+    SimpleDateFormat d = new SimpleDateFormat("EEEEEEEEEEEE");
+    SimpleDateFormat h = new SimpleDateFormat("HH");
+    SimpleDateFormat m = new SimpleDateFormat("mm");
+    Database db = new Database();
+    Date dt = new Date();
+
+    public Scheduler() {
+        String day = getDay();
+        int nofmeetings = db.getNumberOfMeetings(day);
+        if (nofmeetings == 0) {
+            System.exit(0);
+        }
+        int[] hour = db.getHour(day);
+        int[] minute = db.getMinute(day);
+        String[] url = db.getMeetingUrl(day);
+
+        //timer&timertask
+        Timer[] timer = new Timer[nofmeetings];
+        TimerTask[] task = new TimerTask[nofmeetings];
+        Calendar[] calendar = new Calendar[nofmeetings];
+
+        try {
+            task[0] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[0]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[1] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[1]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[2] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[2]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[3] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[3]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[4] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[4]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[5] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[5]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+
+            task[6] = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Desktop desk = Desktop.getDesktop();
+                        desk.browse(new URI(url[6]));
+                        press();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                }
+            };
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        //loop
+        for (int i = 0; i < nofmeetings; i++) {
+            calendar[i] = Calendar.getInstance();
+            timer[i] = new Timer();
+            calendar[i].set(Calendar.HOUR_OF_DAY, hour[i]);
+            calendar[i].set(Calendar.MINUTE, minute[i]);
+            calendar[i].set(Calendar.SECOND, 0);
+            calendar[i].set(Calendar.MILLISECOND, 0);
+            try {
+                if (getHourOfDay() <= hour[i] && getMinuteOfHour() <= minute[i]) {
+                    timer[i].schedule(task[i], calendar[i].getTime());
+                }
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+    }
+
+    private String getDay() {
+        return d.format(dt).toLowerCase();
+    }
+
+    private int getHourOfDay() {
+        return Integer.parseInt(h.format(dt));
+    }
+
+    private int getMinuteOfHour() {
+        return Integer.parseInt(m.format(dt));
+    }
+
+    private void press() {
+        try {
+            Robot r = new Robot();
+            r.delay(3000);
+            r.keyPress(KeyEvent.VK_LEFT);
+            r.keyRelease(KeyEvent.VK_LEFT);
+            r.delay(10);
+            r.keyPress(10);
+            r.keyRelease(10);
+        } catch (Exception ex) {
+            db.showError("press", ex);
+        }
+    }
+
+}
