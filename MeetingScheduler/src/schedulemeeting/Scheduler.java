@@ -84,7 +84,7 @@ public class Scheduler {
     private void press() {
         try {
             Robot r = new Robot();
-            r.delay(5000);
+            r.delay(7000);
             r.keyPress(KeyEvent.VK_LEFT);
             r.keyRelease(KeyEvent.VK_LEFT);
             r.delay(10);
