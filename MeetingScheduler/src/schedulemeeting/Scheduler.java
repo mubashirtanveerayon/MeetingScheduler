@@ -24,12 +24,8 @@ public class Scheduler {
     int[] hour = db.getHour(day);
     int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
-    int p=0;
+    int index=-1;
     public Scheduler() {
-        
-        if (nofmeetings == 0) {
-            System.exit(0);
-        }
 
         //timer&timertask
         Timer[] timer = new Timer[nofmeetings];
@@ -69,8 +65,8 @@ public class Scheduler {
     }
     
     private String getUrl(){
-        p++;
-        return url[p-1];        
+        index++;
+        return url[index];        
     }
 
     private String getDay() {
@@ -95,7 +91,7 @@ public class Scheduler {
             r.keyPress(10);
             r.keyRelease(10);
         } catch (Exception ex) {
-            db.showError("press", ex);
+            System.out.println(ex);
         }
     }
 

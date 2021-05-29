@@ -102,9 +102,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             int y = 70, h = 30;
             for (int j = 0; j < panel.length; j++) {
                 dotLabel[i][j]=new JLabel();
-                dotLabel[i][j].setBounds(187, y+7, 15, 15);
-                dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
-                        + "activated fields. Time must be provided in 24-hour format.");
+                dotLabel[i][j].setBounds(187, y+7, 15, 15);                
                 urlField[i][j] = new JTextField();
                 timeField[i][j] = new JTextField();
                 urlField[i][j].setBounds(215, y, 150, h);
@@ -197,12 +195,15 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                         timeField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 0));
                         urlField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 0));
                         dotLabel[i][j].setIcon(null);
+                        dotLabel[i][j].setToolTipText(null);
                     }
                 }
                 for (int j = 0; j < n; j++) {
                     urlField[i][j].setEnabled(true);
                     timeField[i][j].setEnabled(true);
                     dotLabel[i][j].setIcon(dot);
+                    dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
+                        + "activated fields. Time must be provided in 24-hour format.");
                     timeField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                     urlField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                 }

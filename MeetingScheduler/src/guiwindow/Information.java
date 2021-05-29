@@ -82,7 +82,7 @@ public class Information extends JFrame implements MouseListener{
         if(e.getSource()==linkLabel||e.getSource()==linkStyle){
             Desktop d=Desktop.getDesktop();
             try{
-                d.browse(new URI("https://github.com/mubashirtanveerayon/ZoomMeetingScheduler.git"));
+                d.browse(new URI("https://github.com/mubashirtanveerayon/MeetingScheduler.git"));
             }catch(Exception ex){
                 
             }
