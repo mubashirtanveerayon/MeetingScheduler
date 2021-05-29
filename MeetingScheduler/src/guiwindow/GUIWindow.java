@@ -26,7 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import resourceloader.ResourceLoader;
 
-public class GUIWindow extends JFrame implements ChangeListener, ActionListener, KeyListener,MouseListener {
+public class GUIWindow extends JFrame implements ChangeListener, ActionListener, KeyListener, MouseListener {
 
     private JTabbedPane tp = new JTabbedPane();
     public static JPanel[] panel = new JPanel[7];
@@ -36,8 +36,10 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private final JLabel[] timeLabel = new JLabel[panel.length];
     public static JTextField[][] urlField = new JTextField[panel.length][panel.length];
     public static JTextField[][] timeField = new JTextField[panel.length][panel.length];
-    private ResourceLoader rsc=new ResourceLoader();
-    private JLabel[][] dotLabel=new JLabel[panel.length][panel.length];
+    private ResourceLoader rsc = new ResourceLoader();
+    private JLabel[][] dotLabel = new JLabel[panel.length][panel.length];
+
+    private boolean[][] invalidData = new boolean[panel.length][panel.length];
 
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -45,12 +47,13 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private JButton validate = new JButton("Validate");
 
     public WriteData wd = new WriteData();
-    
-    private final ImageIcon dot=new ImageIcon(rsc.load("res/green.png"));
-    private final ImageIcon info=new ImageIcon(rsc.load("res/infoic.png"));
-    
-    private final JLabel infoLabel=new JLabel(info);
-    
+
+    private final ImageIcon green = new ImageIcon(rsc.load("res/green.png"));
+    private final ImageIcon info = new ImageIcon(rsc.load("res/infoic.png"));
+    private final ImageIcon red = new ImageIcon(rsc.load("res/red.png"));
+
+    private final JLabel infoLabel = new JLabel(info);
+
     public GUIWindow() {
         initComponents();
         this.setVisible(true);
@@ -68,15 +71,15 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         tp.setBounds(60, 20, 390, 400);
         tp.setBackground(new Color(169, 177, 186));
         tp.setForeground(Color.black);
-        
-        infoLabel.setBounds(475,10,20,20);
+
+        infoLabel.setBounds(475, 10, 20, 20);
         infoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         infoLabel.addMouseListener(this);
 
         for (int i = 0; i < panel.length; i++) {
             panel[i] = new JPanel();
             panel[i].setLayout(null);
-            panel[i].setBackground(new Color(51,51,55));
+            panel[i].setBackground(new Color(51, 51, 55));
 
             sp[i] = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
             ((DefaultEditor) sp[i].getEditor()).getTextField().setEditable(false);
@@ -101,8 +104,8 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
 
             int y = 70, h = 30;
             for (int j = 0; j < panel.length; j++) {
-                dotLabel[i][j]=new JLabel();
-                dotLabel[i][j].setBounds(187, y+7, 15, 15);                
+                dotLabel[i][j] = new JLabel();
+                dotLabel[i][j].setBounds(187, y + 7, 15, 15);
                 urlField[i][j] = new JTextField();
                 timeField[i][j] = new JTextField();
                 urlField[i][j].setBounds(215, y, 150, h);
@@ -117,6 +120,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 panel[i].add(urlField[i][j]);
                 panel[i].add(timeField[i][j]);
                 panel[i].add(dotLabel[i][j]);
+                invalidData[i][j] = false;
                 y += h + 10;
             }
 
@@ -145,7 +149,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         this.add(tp);
     }
 
-    private boolean disposeFrame() {
+    private boolean disposeWindow() {
         try {
             this.dispose();
         } catch (Exception ex) {
@@ -175,6 +179,44 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         return length;
     }
 
+    private Thread dataValidation() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                boolean isDataCorrect = true;
+                for (int i = 0; i < panel.length; i++) {
+                    for (int j = 0; j < panel.length; j++) {
+                        if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
+                            String time = timeField[i][j].getText();
+                            String url = urlField[i][j].getText();
+                            if (!(wd.isTimeValid(time) && wd.isUrlValid(url))) {
+                                isDataCorrect = false;
+                                invalidData[i][j] = true;
+                                confirm.setEnabled(false);
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < panel.length; i++) {
+                    for (int j = 0; j < panel.length; j++) {
+                        if (invalidData[i][j]) {
+                            dotLabel[i][j].setIcon(red);
+                        }
+                    }
+                }
+
+                if (isDataCorrect) {
+                    confirm.setEnabled(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid data detected! Please provide valid information in the red-marked fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                validate.setEnabled(true);
+            }
+        };
+        return thread;
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         confirm.setEnabled(false);
@@ -201,9 +243,9 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 for (int j = 0; j < n; j++) {
                     urlField[i][j].setEnabled(true);
                     timeField[i][j].setEnabled(true);
-                    dotLabel[i][j].setIcon(dot);
+                    dotLabel[i][j].setIcon(green);
                     dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
-                        + "activated fields. Time must be provided in 24-hour format.");
+                            + "activated fields. Time must be provided in 24-hour format.");
                     timeField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                     urlField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                 }
@@ -217,7 +259,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             Thread thread = new Thread() {
                 @Override
                 public void run() {
-                    disposeFrame();
+                    disposeWindow();
                     wd.write();
                 }
             };
@@ -234,39 +276,13 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 }
             };
             thread.start();
-
-            Thread thread1 = new Thread() {
-                @Override
-                public void run() {
-                    boolean isDataCorrect = true;
-                    for (int i = 0; i < panel.length; i++) {
-                        for (int j = 0; j < panel.length; j++) {
-                            if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
-                                String time = timeField[i][j].getText();
-                                String url = urlField[i][j].getText();
-                                if (!(wd.isTimeValid(time) && wd.isUrlValid(url))) {
-                                    isDataCorrect = false;
-                                    lsc.frame.dispose();
-                                    JOptionPane.showMessageDialog(null, "Invalid data detected! Please make sure that you are providing valid information.", "Error", JOptionPane.ERROR_MESSAGE);
-                                    confirm.setEnabled(false);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (isDataCorrect) {
-                        confirm.setEnabled(true);
-                    }
-                    validate.setEnabled(true);
-                    try {
-                        lsc.frame.dispose();
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                    }
-                }
-            };
-            thread1.start();
+            dataValidation().start();
+            try {
+                dataValidation().join();
+                lsc.frame.dispose();
+            } catch (Exception ex) {
+                    System.out.println(ex);
+            }            
         }
 
     }
@@ -303,8 +319,8 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getSource()==infoLabel){
-            Information inf=new Information();
+        if (e.getSource() == infoLabel) {
+            Information inf = new Information();
         }
     }
 
