@@ -3,26 +3,36 @@ package main;
 import database.Database;
 import guiwindow.GUIWindow;
 import java.io.File;
+import javax.swing.JOptionPane;
 import schedulemeeting.Scheduler;
 
 public class MainClass {
 
     public static void main(String[] args) {
-        MainClass mc=new MainClass();
+        MainClass mc = new MainClass();
     }
-    
-    public MainClass(){
-        if(isFirstLaunch()){
-            GUIWindow guiwindow=new GUIWindow();
-            Database db=new Database();
+
+    public MainClass() {
+        if (isFirstLaunch()) {
+            Database db = new Database();
             db.initDatabase();
-        }else{
-            Scheduler schedule=new Scheduler();
+            if (isFirstLaunch()) {
+                JOptionPane.showMessageDialog(null, "Could not connect with database!", "Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+            GUIWindow guiwindow = new GUIWindow();
+        } else {
+            Scheduler schedule = new Scheduler();
         }
     }
-    
-    public boolean isFirstLaunch(){
+
+    public boolean isFirstLaunch() {
+        try {
+            Thread.sleep(200);
+        } catch (Exception ex) {
+
+        }
         return !new File("database.db").exists();
     }
-    
+
 }

@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.URL;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,24 +24,25 @@ import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import resourceloader.ResourceLoader;
 
 public class GUIWindow extends JFrame implements ChangeListener, ActionListener, KeyListener, MouseListener {
 
+    private static final int COMPONENTS = 7;
     private JTabbedPane tp = new JTabbedPane();
-    public static JPanel[] panel = new JPanel[7];
-    private JSpinner[] sp = new JSpinner[panel.length];
-    private final JLabel[] spLabel = new JLabel[panel.length];
-    private final JLabel[] urlLabel = new JLabel[panel.length];
-    private final JLabel[] timeLabel = new JLabel[panel.length];
-    public static JTextField[][] urlField = new JTextField[panel.length][panel.length];
-    public static JTextField[][] timeField = new JTextField[panel.length][panel.length];
+    public static JPanel[] panel = new JPanel[COMPONENTS];
+    private JSpinner[] sp = new JSpinner[COMPONENTS];
+    private final JLabel[] spLabel = new JLabel[COMPONENTS];
+    private final JLabel[] urlLabel = new JLabel[COMPONENTS];
+    private final JLabel[] timeLabel = new JLabel[COMPONENTS];
+    public static JTextField[][] urlField = new JTextField[COMPONENTS][COMPONENTS];
+    public static JTextField[][] timeField = new JTextField[COMPONENTS][COMPONENTS];
     private ResourceLoader rsc = new ResourceLoader();
-    private JLabel[][] dotLabel = new JLabel[panel.length][panel.length];
-
-    private boolean[][] invalidData = new boolean[panel.length][panel.length];
+    private JLabel[][] dotLabel = new JLabel[COMPONENTS][COMPONENTS];
 
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -66,7 +69,19 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         this.setDefaultCloseOperation(3);
         this.setLayout(null);
         this.setResizable(false);
-        this.getContentPane().setBackground(new Color(18, 30, 49));
+        this.getContentPane().setBackground(Color.black);
+        //this.getContentPane().setBackground(new Color(18, 30, 49));
+
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+
+        }
 
         tp.setBounds(60, 20, 390, 400);
         tp.setBackground(new Color(169, 177, 186));
@@ -76,10 +91,10 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         infoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         infoLabel.addMouseListener(this);
 
-        for (int i = 0; i < panel.length; i++) {
+        for (int i = 0; i < COMPONENTS; i++) {
             panel[i] = new JPanel();
             panel[i].setLayout(null);
-            panel[i].setBackground(new Color(51, 51, 55));
+            panel[i].setBackground(new Color(40, 40, 40));
 
             sp[i] = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
             ((DefaultEditor) sp[i].getEditor()).getTextField().setEditable(false);
@@ -103,7 +118,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             timeLabel[i].setForeground(Color.white);
 
             int y = 70, h = 30;
-            for (int j = 0; j < panel.length; j++) {
+            for (int j = 0; j < COMPONENTS; j++) {
                 dotLabel[i][j] = new JLabel();
                 dotLabel[i][j].setBounds(187, y + 7, 15, 15);
                 urlField[i][j] = new JTextField();
@@ -115,15 +130,15 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 timeField[i][j].setHorizontalAlignment(JTextField.CENTER);
                 timeField[i][j].setToolTipText("Hour and minute in 24-hour format");
                 urlField[i][j].setToolTipText("Invite link");
+                timeField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 0));
+                urlField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 0));
                 timeField[i][j].addKeyListener(this);
                 urlField[i][j].addKeyListener(this);
                 panel[i].add(urlField[i][j]);
                 panel[i].add(timeField[i][j]);
                 panel[i].add(dotLabel[i][j]);
-                invalidData[i][j] = false;
                 y += h + 10;
             }
-
             panel[i].add(timeLabel[i]);
             panel[i].add(urlLabel[i]);
             panel[i].add(spLabel[i]);
@@ -135,13 +150,18 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         confirm.setFont(new Font("Arial", Font.PLAIN, 20));
         confirm.setEnabled(false);
         confirm.setFocusable(false);
+        confirm.setBackground(null);
+        confirm.setForeground(Color.white);
         confirm.addActionListener(this);
+        confirm.addMouseListener(this);
 
         validate.setBounds(260, 450, 150, 35);
         validate.setFont(new Font("Arial", Font.PLAIN, 20));
         validate.addActionListener(this);
+        validate.addMouseListener(this);
+        validate.setBackground(null);
+        validate.setForeground(Color.white);
         validate.setFocusable(false);
-        validate.setEnabled(false);
 
         this.add(infoLabel);
         this.add(validate);
@@ -171,64 +191,95 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private int validLength(String text) {
         int length = 0;
         for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
-            if (ch != 58) {
+            if (text.charAt(i) != 58) {
                 length++;
             }
         }
         return length;
     }
 
-    private Thread dataValidation() {
+    private void validateData() {
+        validate.setEnabled(false);
+        confirm.setEnabled(false);
         Thread thread = new Thread() {
             @Override
             public void run() {
-                boolean isDataCorrect = true;
-                for (int i = 0; i < panel.length; i++) {
-                    for (int j = 0; j < panel.length; j++) {
+                boolean allDataCorrect = true;
+                JOptionPane.showMessageDialog(null, "Please be patient while the application is validating your data."
+                        + "\n Make sure that you have a stable internet connection.");
+                for (int i = 0; i < COMPONENTS; i++) {
+                    for (int j = 0; j < COMPONENTS; j++) {
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
                             String time = timeField[i][j].getText();
                             String url = urlField[i][j].getText();
-                            if (!(wd.isTimeValid(time) && wd.isUrlValid(url))) {
-                                isDataCorrect = false;
-                                invalidData[i][j] = true;
-                                confirm.setEnabled(false);
+                            if (isTimeValid(time) && isUrlValid(url)) {
+                                dotLabel[i][j].setIcon(green);
+                                dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
+                                        + "activated fields. Time must be provided in 24-hour format.");
+                            } else {
+                                allDataCorrect = false;
+                                dotLabel[i][j].setIcon(red);
+                                dotLabel[i][j].setToolTipText("Invalid information provieded!");
                             }
                         }
                     }
                 }
-
-                for (int i = 0; i < panel.length; i++) {
-                    for (int j = 0; j < panel.length; j++) {
-                        if (invalidData[i][j]) {
-                            dotLabel[i][j].setIcon(red);
+                JOptionPane.showMessageDialog(null, "Data validation complete!");
+                boolean dataProvided = false;
+                for (int i = 0; i < COMPONENTS; i++) {
+                    for (int j = 0; j < COMPONENTS; j++) {
+                        if (dotLabel[i][j].getIcon() != null) {
+                            dataProvided = true;
+                            break;
                         }
                     }
                 }
-
-                if (isDataCorrect) {
+                if (allDataCorrect && dataProvided) {
                     confirm.setEnabled(true);
+                } else if (!dataProvided) {
+                    confirm.setEnabled(false);
+                    JOptionPane.showMessageDialog(null, "You haven't provided any meeting information!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    confirm.setEnabled(false);
                     JOptionPane.showMessageDialog(null, "Invalid data detected! Please provide valid information in the red-marked fields.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 validate.setEnabled(true);
             }
         };
-        return thread;
+        thread.start();
+    }
+
+    public boolean isTimeValid(String text) {
+
+        try {
+            int h = Integer.parseInt(wd.retrieveHour(text));
+            int m = Integer.parseInt(wd.retrieveMinute(text));
+            if (h < 0 || h > 24 || m < 0 || m >= 60) {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isUrlValid(String url) {
+        try {
+            new URL(url).openStream().close();
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         confirm.setEnabled(false);
-        for (int i = 0; i < sp.length; i++) {
+        for (int i = 0; i < COMPONENTS; i++) {
             if (e.getSource() == sp[i]) {
                 int n = Integer.parseInt(sp[i].getValue().toString());
-                if (n == 0) {
-                    validate.setEnabled(false);
-                } else {
-                    validate.setEnabled(true);
-                }
-                for (int j = 0; j < sp.length; j++) {
+                for (int j = 0; j < COMPONENTS; j++) {
                     if (j >= n) {
                         urlField[i][j].setText("");
                         timeField[i][j].setText("");
@@ -243,9 +294,11 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 for (int j = 0; j < n; j++) {
                     urlField[i][j].setEnabled(true);
                     timeField[i][j].setEnabled(true);
-                    dotLabel[i][j].setIcon(green);
-                    dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
-                            + "activated fields. Time must be provided in 24-hour format.");
+                    if (dotLabel[i][j].getIcon() == null) {
+                        dotLabel[i][j].setIcon(green);
+                        dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
+                                + "activated fields. Time must be provided in 24-hour format.");
+                    }
                     timeField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                     urlField[i][j].setBorder(BorderFactory.createLineBorder(Color.black, 2));
                 }
@@ -267,22 +320,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         }
 
         if (e.getSource() == validate) {
-            validate.setEnabled(false);
-            LoadingScreen lsc = new LoadingScreen();
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
-                    lsc.initComponents();
-                }
-            };
-            thread.start();
-            dataValidation().start();
-            try {
-                dataValidation().join();
-                lsc.frame.dispose();
-            } catch (Exception ex) {
-                    System.out.println(ex);
-            }            
+            validateData();
         }
 
     }
@@ -290,8 +328,8 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     @Override
     public void keyTyped(KeyEvent e) {
         confirm.setEnabled(false);
-        for (int i = 0; i < panel.length; i++) {
-            for (int j = 0; j < panel.length; j++) {
+        for (int i = 0; i < COMPONENTS; i++) {
+            for (int j = 0; j < COMPONENTS; j++) {
                 if (e.getSource() == timeField[i][j]) {
                     if (validLength(timeField[i][j].getText()) == 0) {
                         timeField[i][j].setText(null);
@@ -336,11 +374,25 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        if (e.getSource() == confirm) {
+            confirm.setBackground(Color.white);
+            confirm.setForeground(Color.black);
+        }
+        if (e.getSource() == validate) {
+            validate.setBackground(Color.white);
+            validate.setForeground(Color.black);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        if (e.getSource() == confirm) {
+            confirm.setBackground(null);
+            confirm.setForeground(Color.white);
+        }
+        if (e.getSource() == validate) {
+            validate.setBackground(null);
+            validate.setForeground(Color.white);
+        }
     }
 }
