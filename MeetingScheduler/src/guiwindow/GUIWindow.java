@@ -11,7 +11,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
-import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -70,7 +69,6 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         this.setLayout(null);
         this.setResizable(false);
         this.getContentPane().setBackground(Color.black);
-        //this.getContentPane().setBackground(new Color(18, 30, 49));
 
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -162,6 +160,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         validate.setBackground(null);
         validate.setForeground(Color.white);
         validate.setFocusable(false);
+        validate.setEnabled(false);
 
         this.add(infoLabel);
         this.add(validate);
@@ -188,7 +187,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         return false;
     }
 
-    private int validLength(String text) {
+    private int getValidLength(String text) {
         int length = 0;
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) != 58) {
@@ -228,7 +227,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 boolean dataProvided = false;
                 for (int i = 0; i < COMPONENTS; i++) {
                     for (int j = 0; j < COMPONENTS; j++) {
-                        if (dotLabel[i][j].getIcon() != null) {
+                        if ((dotLabel[i][j].getIcon() != null)&&(getValidLength(timeField[i][j].getText())!=0||getValidLength(urlField[i][j].getText())!=0)) {
                             dataProvided = true;
                             break;
                         }
@@ -243,7 +242,6 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                     confirm.setEnabled(false);
                     JOptionPane.showMessageDialog(null, "Invalid data detected! Please provide valid information in the red-marked fields.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                validate.setEnabled(true);
             }
         };
         thread.start();
@@ -328,13 +326,14 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     @Override
     public void keyTyped(KeyEvent e) {
         confirm.setEnabled(false);
+        validate.setEnabled(true);
         for (int i = 0; i < COMPONENTS; i++) {
             for (int j = 0; j < COMPONENTS; j++) {
                 if (e.getSource() == timeField[i][j]) {
-                    if (validLength(timeField[i][j].getText()) == 0) {
+                    if (getValidLength(timeField[i][j].getText()) == 0) {
                         timeField[i][j].setText(null);
                     }
-                    if (!isValidCharacter(e.getKeyChar()) || validLength(timeField[i][j].getText()) > 3) {
+                    if (!isValidCharacter(e.getKeyChar()) || getValidLength(timeField[i][j].getText()) > 3) {
                         e.consume();
                     }
                     if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && timeField[i][j].getText().length() == 2) {
