@@ -32,16 +32,17 @@ import resourceloader.ResourceLoader;
 public class GUIWindow extends JFrame implements ChangeListener, ActionListener, KeyListener, MouseListener {
 
     private static final int COMPONENTS = 7;
+    private static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
     private JTabbedPane tp = new JTabbedPane();
     public static JPanel[] panel = new JPanel[COMPONENTS];
     private JSpinner[] sp = new JSpinner[COMPONENTS];
     private final JLabel[] spLabel = new JLabel[COMPONENTS];
     private final JLabel[] urlLabel = new JLabel[COMPONENTS];
     private final JLabel[] timeLabel = new JLabel[COMPONENTS];
-    public static JTextField[][] urlField = new JTextField[COMPONENTS][COMPONENTS];
-    public static JTextField[][] timeField = new JTextField[COMPONENTS][COMPONENTS];
+    public static JTextField[][] urlField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+    public static JTextField[][] timeField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     private ResourceLoader rsc = new ResourceLoader();
-    private JLabel[][] dotLabel = new JLabel[COMPONENTS][COMPONENTS];
+    private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
 
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -81,7 +82,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
 
         }
 
-        tp.setBounds(60, 20, 390, 400);
+        tp.setBounds(60, 10, 390, 440);
         tp.setBackground(new Color(169, 177, 186));
         tp.setForeground(Color.black);
 
@@ -94,7 +95,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             panel[i].setLayout(null);
             panel[i].setBackground(new Color(40, 40, 40));
 
-            sp[i] = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
+            sp[i] = new JSpinner(new SpinnerNumberModel(0, 0, MAXIMUM_NUMBER_OF_MEETINGS, 1));
             ((DefaultEditor) sp[i].getEditor()).getTextField().setEditable(false);
             sp[i].setFont(new Font("Arial", Font.BOLD, 15));
             sp[i].setBounds(235, 15, 40, 25);
@@ -116,11 +117,12 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             timeLabel[i].setForeground(Color.white);
 
             int y = 70, h = 30;
-            for (int j = 0; j < COMPONENTS; j++) {
+            for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                 dotLabel[i][j] = new JLabel();
                 dotLabel[i][j].setBounds(187, y + 7, 15, 15);
                 urlField[i][j] = new JTextField();
                 timeField[i][j] = new JTextField();
+                timeField[i][j].setTransferHandler(null);
                 urlField[i][j].setBounds(215, y, 150, h);
                 urlField[i][j].setEnabled(false);
                 timeField[i][j].setEnabled(false);
@@ -144,7 +146,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
             tp.addTab(title[i], panel[i]);
         }
 
-        confirm.setBounds(100, 450, 150, 35);
+        confirm.setBounds(100, 460, 150, 35);
         confirm.setFont(new Font("Arial", Font.PLAIN, 20));
         confirm.setEnabled(false);
         confirm.setFocusable(false);
@@ -153,14 +155,13 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         confirm.addActionListener(this);
         confirm.addMouseListener(this);
 
-        validate.setBounds(260, 450, 150, 35);
+        validate.setBounds(260, 460, 150, 35);
         validate.setFont(new Font("Arial", Font.PLAIN, 20));
         validate.addActionListener(this);
         validate.addMouseListener(this);
         validate.setBackground(null);
         validate.setForeground(Color.white);
         validate.setFocusable(false);
-        validate.setEnabled(false);
 
         this.add(infoLabel);
         this.add(validate);
@@ -198,7 +199,6 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     }
 
     private void validateData() {
-        validate.setEnabled(false);
         confirm.setEnabled(false);
         Thread thread = new Thread() {
             @Override
@@ -207,7 +207,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 JOptionPane.showMessageDialog(null, "Please be patient while the application is validating your data."
                         + "\n Make sure that you have a stable internet connection.");
                 for (int i = 0; i < COMPONENTS; i++) {
-                    for (int j = 0; j < COMPONENTS; j++) {
+                    for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
                             String time = timeField[i][j].getText();
                             String url = urlField[i][j].getText();
@@ -226,8 +226,8 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 JOptionPane.showMessageDialog(null, "Data validation complete!");
                 boolean dataProvided = false;
                 for (int i = 0; i < COMPONENTS; i++) {
-                    for (int j = 0; j < COMPONENTS; j++) {
-                        if ((dotLabel[i][j].getIcon() != null)&&(getValidLength(timeField[i][j].getText())!=0||getValidLength(urlField[i][j].getText())!=0)) {
+                    for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
+                        if (dotLabel[i][j].getIcon() != null) {
                             dataProvided = true;
                             break;
                         }
@@ -277,7 +277,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         for (int i = 0; i < COMPONENTS; i++) {
             if (e.getSource() == sp[i]) {
                 int n = Integer.parseInt(sp[i].getValue().toString());
-                for (int j = 0; j < COMPONENTS; j++) {
+                for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                     if (j >= n) {
                         urlField[i][j].setText("");
                         timeField[i][j].setText("");
@@ -326,9 +326,8 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     @Override
     public void keyTyped(KeyEvent e) {
         confirm.setEnabled(false);
-        validate.setEnabled(true);
         for (int i = 0; i < COMPONENTS; i++) {
-            for (int j = 0; j < COMPONENTS; j++) {
+            for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                 if (e.getSource() == timeField[i][j]) {
                     if (getValidLength(timeField[i][j].getText()) == 0) {
                         timeField[i][j].setText(null);
