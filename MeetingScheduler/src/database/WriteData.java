@@ -1,23 +1,24 @@
 package database;
 
 import guiwindow.GUIWindow;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import main.MainClass;
+import translation.TranslateUrl;
 
 public class WriteData {
 
     public Database db = new Database();
-
+    public TranslateUrl turl=new TranslateUrl();
+    
     public void write() {
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {
                     String time = GUIWindow.timeField[i][j].getText();
                     String url = GUIWindow.urlField[i][j].getText();
-                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",'" + url + "')";
+                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",'" + turl.translate(url,true) + "')";
                     Connection connect = db.establishConnection();
                     PreparedStatement ps = null;
                     try {

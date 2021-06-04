@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+import translation.TranslateUrl;
 
 public class Scheduler {
 
@@ -25,6 +26,7 @@ public class Scheduler {
     int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
     int index=-1;
+    public TranslateUrl turl=new TranslateUrl();
     public Scheduler() {
 
         //timer&timertask
@@ -66,7 +68,7 @@ public class Scheduler {
     
     private String getUrl(){
         index++;
-        return url[index];        
+        return turl.translate(url[index],false);        
     }
 
     private String getDay() {

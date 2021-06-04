@@ -1,6 +1,7 @@
 package guiwindow;
 
 import database.WriteData;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -43,7 +44,10 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     public static JTextField[][] timeField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     private ResourceLoader rsc = new ResourceLoader();
     private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-
+    private JPanel panel1=new JPanel(null);
+    private JPanel panel2=new JPanel(null);
+    private CardLayout cardLayout=new CardLayout();
+    
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     private JButton confirm = new JButton("Confirm");
@@ -58,13 +62,13 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private final JLabel infoLabel = new JLabel(info);
 
     public GUIWindow() {
+        super("Meeting Scheduler");
         initComponents();
         this.setVisible(true);
     }
 
     private void initComponents() {
-
-        this.setTitle("Meeting Scheduler");
+       
         this.setBounds(400, 100, 520, 550);
         this.setDefaultCloseOperation(3);
         this.setLayout(null);
@@ -79,7 +83,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
                 }
             }
         } catch (Exception ex) {
-
+            System.out.println(ex);
         }
 
         tp.setBounds(60, 10, 390, 440);
