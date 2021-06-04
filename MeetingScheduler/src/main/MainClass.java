@@ -6,7 +6,7 @@ import java.io.File;
 import javax.swing.JOptionPane;
 import schedulemeeting.Scheduler;
 
-public class MainClass {
+public class MainClass{
 
     public static void main(String[] args) {
         MainClass mc = new MainClass();
@@ -21,9 +21,10 @@ public class MainClass {
                 System.exit(0);
             }
             GUIWindow guiwindow = new GUIWindow();
+            guiwindow.frame.setVisible(true);
         } else {
             Scheduler schedule = new Scheduler();
-        }
+        }        
     }
 
     public boolean isFirstLaunch() {
@@ -32,7 +33,7 @@ public class MainClass {
         } catch (Exception ex) {
 
         }
-        return !new File("database.db").exists();
+        return !new File("delete_me_to_reset_data.db").exists();
     }
 
 }

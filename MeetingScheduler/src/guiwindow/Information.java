@@ -71,10 +71,7 @@ public class Information extends JFrame implements MouseListener{
         linkStyle.setBackground(Color.DARK_GRAY);
         linkStyle.setCursor(new Cursor(Cursor.HAND_CURSOR));
         linkStyle.addMouseListener(this);
-        this.add(linkStyle);
-        if(!this.isVisible()){
-            this.setVisible(true);
-        }        
+        this.add(linkStyle);        
     }
 
     @Override

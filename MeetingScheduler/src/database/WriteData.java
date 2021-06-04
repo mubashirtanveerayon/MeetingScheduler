@@ -39,9 +39,9 @@ public class WriteData {
         }
         System.out.println("All data has been written successfully!");
         JOptionPane.showMessageDialog(null, "All data has been saved successfully.");
-        JOptionPane.showMessageDialog(null, "The application will keep running in the background.");
-        JOptionPane.showMessageDialog(null, "If you want to reset your data, run the 'run_me_to_reset_data.bat' file and restart the app.\n"
-                + "You will be redirected to the window where you will be able to provide your meeting data again.");
+        JOptionPane.showMessageDialog(null, "The application will keep running in the background if you have any meeting scheduled for today.");
+        JOptionPane.showMessageDialog(null, "If you want to reset your data, delete the 'delete_me_to_reset_data.db' file and restart the app."
+                +"\nYou will be redirected to the window where you will be able to provide your meeting data again.");
         MainClass mc = new MainClass();
     }
 

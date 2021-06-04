@@ -12,7 +12,7 @@ public class Database {
         Connection connect = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:database.db");
+            connect = DriverManager.getConnection("jdbc:sqlite:delete_me_to_reset_data.db");
             System.out.println("Database connected!");
         } catch (Exception ex) {
             System.out.println(ex);

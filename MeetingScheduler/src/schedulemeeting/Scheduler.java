@@ -3,7 +3,9 @@ package schedulemeeting;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import database.Database;
+import guiwindow.GUIWindow;
 import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.net.URI;
@@ -12,7 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import translation.TranslateUrl;
 
-public class Scheduler {
+public class Scheduler extends GUIWindow {
 
     SimpleDateFormat d = new SimpleDateFormat("EEEEEEEEEEEE");
     SimpleDateFormat h = new SimpleDateFormat("HH");
@@ -25,9 +27,18 @@ public class Scheduler {
     int[] hour = db.getHour(day);
     int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
-    int index=-1;
-    public TranslateUrl turl=new TranslateUrl();
+    int index = -1;
+    public TranslateUrl turl = new TranslateUrl();
+
     public Scheduler() {
+
+        if (nofmeetings != 0) {
+            infoLabel.setLocation(355,135);
+            cardLayout.show(container, "second");
+            frame.setBounds(500, 250, 400, 200);
+            frame.setState(Frame.ICONIFIED);
+            frame.setVisible(true);
+        }
 
         //timer&timertask
         Timer[] timer = new Timer[nofmeetings];
@@ -36,20 +47,20 @@ public class Scheduler {
 
         //loop
         for (int i = 0; i < nofmeetings; i++) {
-            
-            task[i]=new TimerTask(){
+
+            task[i] = new TimerTask() {
                 @Override
                 public void run() {
                     try {
                         Desktop desk = Desktop.getDesktop();
-                        desk.browse(new URI(getUrl()));                        
+                        desk.browse(new URI(getUrl()));
                         press();
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
                 }
             };
-            
+
             calendar[i] = Calendar.getInstance();
             timer[i] = new Timer();
             calendar[i].set(Calendar.HOUR_OF_DAY, hour[i]);
@@ -65,10 +76,10 @@ public class Scheduler {
             }
         }
     }
-    
-    private String getUrl(){
+
+    private String getUrl() {
         index++;
-        return turl.translate(url[index],false);        
+        return turl.translate(url[index], false);
     }
 
     private String getDay() {

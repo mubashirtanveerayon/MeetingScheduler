@@ -5,8 +5,9 @@
         <group>
             <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/database/Database.java</file>
             <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/database/WriteData.java</file>
-            <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/schedulemeeting/Scheduler.java</file>
             <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/main/MainClass.java</file>
+            <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/schedulemeeting/Scheduler.java</file>
+            <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/guiwindow/Information.java</file>
             <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/guiwindow/GUIWindow.java</file>
             <file>file:/D:/Projects/MeetingScheduler/MeetingScheduler/src/translation/TranslateUrl.java</file>
         </group>

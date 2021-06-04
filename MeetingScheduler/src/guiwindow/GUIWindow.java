@@ -3,6 +3,7 @@ package guiwindow;
 import database.WriteData;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import resourceloader.ResourceLoader;
 
-public class GUIWindow extends JFrame implements ChangeListener, ActionListener, KeyListener, MouseListener {
+public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener {
 
     private static final int COMPONENTS = 7;
     private static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
@@ -46,7 +47,11 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     private JPanel panel1=new JPanel(null);
     private JPanel panel2=new JPanel(null);
-    private CardLayout cardLayout=new CardLayout();
+    public CardLayout cardLayout=new CardLayout();
+    public Container container;
+    private final JLabel closeLabel1=new JLabel("Closeing this window will");
+    private final JLabel closeLabel2=new JLabel("force the application");
+    private final JLabel closeLabel3=new JLabel("to shut down!");
     
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -58,22 +63,24 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     private final ImageIcon green = new ImageIcon(rsc.load("res/green.png"));
     private final ImageIcon info = new ImageIcon(rsc.load("res/infoic.png"));
     private final ImageIcon red = new ImageIcon(rsc.load("res/red.png"));
-
-    private final JLabel infoLabel = new JLabel(info);
-
+    public JFrame frame=new JFrame("Meeting Scheduler");
+    
+    public final JLabel infoLabel = new JLabel(info);
+    
+    public final Information inf = new Information();
+    
     public GUIWindow() {
-        super("Meeting Scheduler");
         initComponents();
-        this.setVisible(true);
     }
 
     private void initComponents() {
+        
+        container=frame.getContentPane();
        
-        this.setBounds(400, 100, 520, 550);
-        this.setDefaultCloseOperation(3);
-        this.setLayout(null);
-        this.setResizable(false);
-        this.getContentPane().setBackground(Color.black);
+        frame.setBounds(400, 100, 520, 550);
+        frame.setDefaultCloseOperation(3);
+        container.setLayout(cardLayout);
+        frame.setResizable(false);
 
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -97,7 +104,7 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         for (int i = 0; i < COMPONENTS; i++) {
             panel[i] = new JPanel();
             panel[i].setLayout(null);
-            panel[i].setBackground(new Color(40, 40, 40));
+            panel[i].setBackground(new Color(50, 50, 50));
 
             sp[i] = new JSpinner(new SpinnerNumberModel(0, 0, MAXIMUM_NUMBER_OF_MEETINGS, 1));
             ((DefaultEditor) sp[i].getEditor()).getTextField().setEditable(false);
@@ -166,16 +173,38 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         validate.setBackground(null);
         validate.setForeground(Color.white);
         validate.setFocusable(false);
+        
+        closeLabel1.setForeground(Color.white);
+        closeLabel1.setFont(new Font("Monospaced",Font.PLAIN,25));
+        closeLabel1.setBounds(8,20,510,50);
+        
+        closeLabel2.setForeground(Color.white);
+        closeLabel2.setFont(new Font("Monospaced",Font.PLAIN,25));
+        closeLabel2.setBounds(35,60,510,50);
+        
+        closeLabel3.setForeground(Color.white);
+        closeLabel3.setFont(new Font("Monospaced",Font.PLAIN,25));
+        closeLabel3.setBounds(100,100,510,50);
 
-        this.add(infoLabel);
-        this.add(validate);
-        this.add(confirm);
-        this.add(tp);
+        panel1.add(infoLabel);
+        panel2.add(infoLabel);
+        panel2.add(closeLabel1);
+        panel2.add(closeLabel2);
+        panel2.add(closeLabel3);
+        panel1.add(validate);
+        panel1.add(confirm);
+        panel1.add(tp);
+        
+        panel1.setBackground(Color.black);
+        panel2.setBackground(Color.black);
+        
+        container.add(panel1,"first");
+        container.add(panel2,"second");
     }
 
     private boolean disposeWindow() {
         try {
-            this.dispose();
+            frame.dispose();
         } catch (Exception ex) {
             return false;
         }
@@ -252,7 +281,6 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     }
 
     public boolean isTimeValid(String text) {
-
         try {
             int h = Integer.parseInt(wd.retrieveHour(text));
             int m = Integer.parseInt(wd.retrieveMinute(text));
@@ -262,7 +290,6 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
         } catch (Exception ex) {
             return false;
         }
-
         return true;
     }
 
@@ -360,7 +387,11 @@ public class GUIWindow extends JFrame implements ChangeListener, ActionListener,
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == infoLabel) {
-            Information inf = new Information();
+            if(inf.isVisible()){
+                inf.setVisible(false);
+            }else{
+                inf.setVisible(true);
+            }
         }
     }
 
