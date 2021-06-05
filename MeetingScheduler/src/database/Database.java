@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Database {
-
+    
     public Connection establishConnection() {
         Connection connect = null;
         try {

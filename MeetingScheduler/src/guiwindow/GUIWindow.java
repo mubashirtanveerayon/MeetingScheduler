@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -31,12 +33,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import resourceloader.ResourceLoader;
 
-public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener {
+public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener,WindowListener {
 
     private static final int COMPONENTS = 7;
     private static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
     private JTabbedPane tp = new JTabbedPane();
-    public static JPanel[] panel = new JPanel[COMPONENTS];
+    public JPanel[] panel = new JPanel[COMPONENTS];
     private JSpinner[] sp = new JSpinner[COMPONENTS];
     private final JLabel[] spLabel = new JLabel[COMPONENTS];
     private final JLabel[] urlLabel = new JLabel[COMPONENTS];
@@ -45,8 +47,8 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public static JTextField[][] timeField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     private ResourceLoader rsc = new ResourceLoader();
     private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-    private JPanel panel1=new JPanel(null);
-    private JPanel panel2=new JPanel(null);
+    public JPanel panel1=new JPanel(null);
+    public JPanel panel2=new JPanel(null);
     public CardLayout cardLayout=new CardLayout();
     public Container container;
     private final JLabel closeLabel1=new JLabel("Closeing this window will");
@@ -78,12 +80,14 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         container=frame.getContentPane();
        
         frame.setBounds(400, 100, 520, 550);
-        frame.setDefaultCloseOperation(3);
+        frame.setDefaultCloseOperation(0);
         container.setLayout(cardLayout);
         frame.setResizable(false);
+        frame.addWindowListener(this);
 
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                System.out.println(info.getName());
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -187,7 +191,6 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         closeLabel3.setBounds(100,100,510,50);
 
         panel1.add(infoLabel);
-        panel2.add(infoLabel);
         panel2.add(closeLabel1);
         panel2.add(closeLabel2);
         panel2.add(closeLabel3);
@@ -200,15 +203,6 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         
         container.add(panel1,"first");
         container.add(panel2,"second");
-    }
-
-    private boolean disposeWindow() {
-        try {
-            frame.dispose();
-        } catch (Exception ex) {
-            return false;
-        }
-        return true;
     }
 
     private boolean isValidCharacter(char ch) {
@@ -341,7 +335,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             Thread thread = new Thread() {
                 @Override
                 public void run() {
-                    disposeWindow();
+                    frame.setVisible(false);
                     wd.write();
                 }
             };
@@ -427,5 +421,44 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             validate.setBackground(null);
             validate.setForeground(Color.white);
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        int opt=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?","Exit",JOptionPane.YES_NO_OPTION);
+        if(opt==JOptionPane.YES_OPTION){
+            System.exit(0);
+        }
+        
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }

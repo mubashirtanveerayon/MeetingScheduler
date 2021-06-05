@@ -15,11 +15,11 @@ public class MainClass{
     public MainClass() {
         if (isFirstLaunch()) {
             Database db = new Database();
-            db.initDatabase();
+            /*db.initDatabase();
             if (isFirstLaunch()) {
                 JOptionPane.showMessageDialog(null, "Could not connect with database!", "Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
-            }
+            }*/
             GUIWindow guiwindow = new GUIWindow();
             guiwindow.frame.setVisible(true);
         } else {

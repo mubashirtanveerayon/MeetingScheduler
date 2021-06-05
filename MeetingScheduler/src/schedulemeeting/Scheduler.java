@@ -34,6 +34,7 @@ public class Scheduler extends GUIWindow {
 
         if (nofmeetings != 0) {
             infoLabel.setLocation(355,135);
+            panel2.add(infoLabel);
             cardLayout.show(container, "second");
             frame.setBounds(500, 250, 400, 200);
             frame.setState(Frame.ICONIFIED);

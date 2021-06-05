@@ -11,7 +11,6 @@ public class Information extends JFrame implements MouseListener{
     ImageIcon ico,img;
     JLabel inf1,ver,earlyrelease,txt1,txt2;
     Container c;
-    public int x,y;
     public JLabel linkLabel=new JLabel("Source Code");
     public JLabel linkStyle=new JLabel();
     private ResourceLoader rsc=new ResourceLoader();
@@ -35,7 +34,7 @@ public class Information extends JFrame implements MouseListener{
         this.add(inf1);
         
         ver = new JLabel();
-        ver.setText("Version 1.0");
+        ver.setText("Version 1.1");
         ver.setForeground(Color.white);
         ver.setFont(new Font("Aerial",Font.ITALIC,15));
         ver.setBounds(170,117,80,20);
