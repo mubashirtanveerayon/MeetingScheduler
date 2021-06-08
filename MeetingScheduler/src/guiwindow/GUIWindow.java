@@ -233,9 +233,11 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                 boolean allDataCorrect = true;
                 JOptionPane.showMessageDialog(null, "Please be patient while the application is validating your data."
                         + "\n Make sure that you have a stable internet connection.");
+                boolean dataProvided = false;
                 for (int i = 0; i < COMPONENTS; i++) {
                     for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
+                            dataProvided = true;
                             String time = timeField[i][j].getText();
                             String url = urlField[i][j].getText();
                             if (isTimeValid(time) && isUrlValid(url)) {
@@ -251,15 +253,6 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                     }
                 }
                 JOptionPane.showMessageDialog(null, "Data validation complete!");
-                boolean dataProvided = false;
-                for (int i = 0; i < COMPONENTS; i++) {
-                    for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
-                        if (dotLabel[i][j].getIcon() != null) {
-                            dataProvided = true;
-                            break;
-                        }
-                    }
-                }
                 if (allDataCorrect && dataProvided) {
                     confirm.setEnabled(true);
                 } else if (!dataProvided) {

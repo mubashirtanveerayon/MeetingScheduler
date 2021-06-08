@@ -10,7 +10,6 @@ public class Information extends JFrame implements MouseListener{
 
     ImageIcon ico,img;
     JLabel inf1,ver,earlyrelease,txt1,txt2;
-    Container c;
     public JLabel linkLabel=new JLabel("Source Code");
     public JLabel linkStyle=new JLabel();
     private ResourceLoader rsc=new ResourceLoader();
