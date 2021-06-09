@@ -58,7 +58,8 @@ public class Scheduler extends GUIWindow {
                     try {
                         Desktop desk = Desktop.getDesktop();
                         String meetingUrl=getUrl();
-                        desk.browse(new URI(meetingUrl));                        
+                        desk.browse(new URI(meetingUrl));   
+                        pressKeys(meetingUrl);
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
@@ -98,8 +99,12 @@ public class Scheduler extends GUIWindow {
         return Integer.parseInt(m.format(dt));
     }
 
-    private void pressKeys(String meetingUrl) throws Exception{
-        
+    private void pressKeys(String meetingUrl) {
+        if(meetingUrl.contains("zoom")){
+            zoom.joinMeeting();
+        }else if(meetingUrl.contains("google")){
+            gm.joinMeeting();
+        }
     }
 
     
