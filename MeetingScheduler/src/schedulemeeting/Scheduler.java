@@ -1,13 +1,13 @@
 package schedulemeeting;
 
+import joiningmeeting.Zoom;
+import joiningmeeting.GoogleMeet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import database.Database;
 import guiwindow.GUIWindow;
 import java.awt.Desktop;
 import java.awt.Frame;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Timer;
@@ -28,7 +28,10 @@ public class Scheduler extends GUIWindow {
     int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
     int index = -1;
-    public TranslateUrl turl = new TranslateUrl();
+    
+    private TranslateUrl turl = new TranslateUrl();
+    private Zoom zoom=new Zoom();
+    private GoogleMeet gm=new GoogleMeet();
 
     public Scheduler() {
 
@@ -54,8 +57,8 @@ public class Scheduler extends GUIWindow {
                 public void run() {
                     try {
                         Desktop desk = Desktop.getDesktop();
-                        desk.browse(new URI(getUrl()));
-                        press();
+                        String meetingUrl=getUrl();
+                        desk.browse(new URI(meetingUrl));                        
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
@@ -95,18 +98,10 @@ public class Scheduler extends GUIWindow {
         return Integer.parseInt(m.format(dt));
     }
 
-    private void press() {
-        try {
-            Robot r = new Robot();
-            r.delay(7000);
-            r.keyPress(KeyEvent.VK_LEFT);
-            r.keyRelease(KeyEvent.VK_LEFT);
-            r.delay(10);
-            r.keyPress(10);
-            r.keyRelease(10);
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
+    private void pressKeys(String meetingUrl) throws Exception{
+        
     }
+
+    
 
 }
