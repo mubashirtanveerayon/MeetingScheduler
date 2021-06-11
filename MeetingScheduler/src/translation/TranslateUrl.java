@@ -11,7 +11,7 @@ public class TranslateUrl {
                 maintext += text.charAt(i);
             }
         }
-        return isEncrypting?maintext.replaceAll("://", ";~"):maintext.replaceAll(";~", "://");
+        return isEncrypting?maintext.replace("://", "|"):maintext.replace("|", "://");
     }
 
 }

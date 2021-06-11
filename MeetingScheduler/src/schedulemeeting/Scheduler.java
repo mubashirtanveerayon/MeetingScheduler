@@ -1,13 +1,14 @@
 package schedulemeeting;
 
-import joiningmeeting.Zoom;
-import joiningmeeting.GoogleMeet;
+import joiningmeeting.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import database.Database;
 import guiwindow.GUIWindow;
 import java.awt.Desktop;
 import java.awt.Frame;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Timer;
@@ -30,11 +31,10 @@ public class Scheduler extends GUIWindow {
     int index = -1;
     
     private TranslateUrl turl = new TranslateUrl();
-    private Zoom zoom=new Zoom();
+    private Common cm=new Common();
     private GoogleMeet gm=new GoogleMeet();
 
     public Scheduler() {
-
         if (nofmeetings != 0) {
             infoLabel.setLocation(355,135);
             panel2.add(infoLabel);
@@ -58,7 +58,7 @@ public class Scheduler extends GUIWindow {
                     try {
                         Desktop desk = Desktop.getDesktop();
                         String meetingUrl=getUrl();
-                        desk.browse(new URI(meetingUrl));   
+                        desk.browse(new URI(meetingUrl));                          
                         pressKeys(meetingUrl);
                     } catch (Exception ex) {
                         System.out.println(ex);
@@ -83,7 +83,7 @@ public class Scheduler extends GUIWindow {
     }
 
     private String getUrl() {
-        index++;
+        index++;        
         return turl.translate(url[index], false);
     }
 
@@ -100,10 +100,22 @@ public class Scheduler extends GUIWindow {
     }
 
     private void pressKeys(String meetingUrl) {
-        if(meetingUrl.contains("zoom")){
-            zoom.joinMeeting();
-        }else if(meetingUrl.contains("google")){
-            gm.joinMeeting();
+        try{
+            Robot robot=new Robot();
+            robot.delay(7000);
+            robot.keyPress(KeyEvent.VK_F11);
+            robot.keyRelease(KeyEvent.VK_F11);
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+        if(meetingUrl.contains("google")){
+            gm.disconnectMedia();
+            cm.pressJoinButton("meetjoin", 100);
+        }else if(meetingUrl.contains("webex")){
+            cm.launchMeeting();
+            cm.pressJoinButton("webexjoin", 6500);
+        }else{
+            cm.launchMeeting();
         }
     }
 
