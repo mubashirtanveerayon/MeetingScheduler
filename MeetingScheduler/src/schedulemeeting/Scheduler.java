@@ -31,8 +31,8 @@ public class Scheduler extends GUIWindow {
     int index = -1;
     
     private TranslateUrl turl = new TranslateUrl();
-    private Common cm=new Common();
-    private GoogleMeet gm=new GoogleMeet();
+   
+    
 
     public Scheduler() {
         if (nofmeetings != 0) {
@@ -42,6 +42,8 @@ public class Scheduler extends GUIWindow {
             frame.setBounds(500, 250, 400, 200);
             frame.setState(Frame.ICONIFIED);
             frame.setVisible(true);
+        }else{
+            System.exit(0);
         }
 
         //timer&timertask
@@ -74,6 +76,7 @@ public class Scheduler extends GUIWindow {
             calendar[i].set(Calendar.MILLISECOND, 0);
             try {
                 if (getHourOfDay() <= hour[i] && getMinuteOfHour() <= minute[i]) {
+                    System.out.println("scheduled");
                     timer[i].schedule(task[i], calendar[i].getTime());
                 }
             } catch (Exception ex) {
@@ -102,21 +105,17 @@ public class Scheduler extends GUIWindow {
     private void pressKeys(String meetingUrl) {
         try{
             Robot robot=new Robot();
-            robot.delay(7000);
+            Thread.sleep(10000);
             robot.keyPress(KeyEvent.VK_F11);
             robot.keyRelease(KeyEvent.VK_F11);
         }catch(Exception ex){
             System.out.println(ex);
         }
-        if(meetingUrl.contains("google")){
-            gm.disconnectMedia();
-            cm.pressJoinButton("meetjoin", 100);
-        }else if(meetingUrl.contains("webex")){
-            cm.launchMeeting();
-            cm.pressJoinButton("webexjoin", 6500);
-        }else{
-            cm.launchMeeting();
+        
+        if(meetingUrl.contains("zoom")||meetingUrl.contains("google")||meetingUrl.contains("webex")){
+            LaunchMeeting lm=new LaunchMeeting(meetingUrl);
         }
+        
     }
 
     

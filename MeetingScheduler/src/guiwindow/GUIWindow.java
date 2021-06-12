@@ -422,7 +422,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
 
     @Override
     public void windowClosing(WindowEvent e) {
-        int opt=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?","Exit",JOptionPane.YES_NO_OPTION);
+        int opt=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?","Meeting Scheduler",JOptionPane.YES_NO_OPTION);
         if(opt==JOptionPane.YES_OPTION){
             System.exit(0);
         }

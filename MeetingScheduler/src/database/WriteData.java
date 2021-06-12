@@ -1,6 +1,7 @@
 package database;
 
 import guiwindow.GUIWindow;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
@@ -9,10 +10,20 @@ import translation.TranslateUrl;
 
 public class WriteData {
 
-    public Database db = new Database();
-    public TranslateUrl turl=new TranslateUrl();
+    private final Database db = new Database();
+    private final TranslateUrl turl=new TranslateUrl();
     
     public void write() {
+        db.initDatabase();
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        if(!new File("delete_me_to_reset_data.db").exists()){
+            JOptionPane.showMessageDialog(null, "Could not connect with database!","Error",JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {

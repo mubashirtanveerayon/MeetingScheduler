@@ -24,7 +24,6 @@ public class Database {
         Thread thread = new Thread() {
             @Override
             public void run() {
-
                 for (int i = 0; i < 7; i++) {
                     String sql = "create table " + GUIWindow.title[i] + "(n integer,h integer,m integer, url varchar(100))";
                     Connection connect = establishConnection();
