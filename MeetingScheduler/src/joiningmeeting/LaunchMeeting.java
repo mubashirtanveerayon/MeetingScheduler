@@ -42,7 +42,7 @@ public class LaunchMeeting {
                 System.out.println(ex);
             }
             disconnectMedia();
-            pressJoinButton(refName,500);
+            pressJoinButton(refName,50);
         }        
         
     }
@@ -52,7 +52,7 @@ public class LaunchMeeting {
         boolean pageLoaded=false;
         int tried=0;
         int numberOfRefs=numberOfImages(refName);        
-        while(!pageLoaded&&tried<=200){            
+        while(!pageLoaded&&tried<=150){            
             Point[] point=new Point[numberOfRefs];
             for (int i = 0; i < numberOfRefs; i++) {
                 point[i] = ssc.pointOnScreen(ImageIO.read(rsc.load(KNOWLEDGEBASE_LOCATION+refName+".png")), 500);
@@ -118,10 +118,10 @@ public class LaunchMeeting {
             Robot robot = new Robot();
             robot.delay(800);
             robot.keyPress(KeyEvent.VK_CONTROL);
-            robot.delay(20);
+            robot.delay(120);
             robot.keyPress(KeyEvent.VK_D);
             robot.keyRelease(KeyEvent.VK_D);
-            robot.delay(20);
+            robot.delay(120);
             robot.keyPress(KeyEvent.VK_E);
             robot.keyRelease(KeyEvent.VK_E);
             robot.keyRelease(KeyEvent.VK_CONTROL);                                   

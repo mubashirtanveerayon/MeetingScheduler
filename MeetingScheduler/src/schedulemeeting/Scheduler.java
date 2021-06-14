@@ -28,11 +28,9 @@ public class Scheduler extends GUIWindow {
     int[] hour = db.getHour(day);
     int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
-    int index = -1;
-    
-    private TranslateUrl turl = new TranslateUrl();
+    boolean[] isScheduled=new boolean[nofmeetings];
    
-    
+    private TranslateUrl turl = new TranslateUrl();
 
     public Scheduler() {
         if (nofmeetings != 0) {
@@ -53,15 +51,21 @@ public class Scheduler extends GUIWindow {
 
         //loop
         for (int i = 0; i < nofmeetings; i++) {
-
+            isScheduled[i]=false;
             task[i] = new TimerTask() {
                 @Override
                 public void run() {
                     try {
                         Desktop desk = Desktop.getDesktop();
-                        String meetingUrl=getUrl();
-                        desk.browse(new URI(meetingUrl));                          
-                        pressKeys(meetingUrl);
+                        for (int k = 0; k < nofmeetings; k++) {
+                            if(isScheduled[k]){
+                                isScheduled[k]=false;
+                                String meetingUrl = turl.translate(url[k], false);
+                                desk.browse(new URI(meetingUrl));
+                                pressKeys(meetingUrl);
+                                break;
+                            }
+                        }
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
@@ -75,8 +79,8 @@ public class Scheduler extends GUIWindow {
             calendar[i].set(Calendar.SECOND, 0);
             calendar[i].set(Calendar.MILLISECOND, 0);
             try {
-                if (getHourOfDay() <= hour[i] && getMinuteOfHour() <= minute[i]) {
-                    System.out.println("scheduled");
+                if (dt.getTime() <= calendar[i].getTimeInMillis()+180000) {
+                    isScheduled[i]=true;
                     timer[i].schedule(task[i], calendar[i].getTime());
                 }
             } catch (Exception ex) {
@@ -85,21 +89,8 @@ public class Scheduler extends GUIWindow {
         }
     }
 
-    private String getUrl() {
-        index++;        
-        return turl.translate(url[index], false);
-    }
-
     private String getDay() {
         return d.format(dt).toLowerCase();
-    }
-
-    private int getHourOfDay() {
-        return Integer.parseInt(h.format(dt));
-    }
-
-    private int getMinuteOfHour() {
-        return Integer.parseInt(m.format(dt));
     }
 
     private void pressKeys(String meetingUrl) {
