@@ -16,6 +16,6 @@ public class MainClass{
             guiwindow.frame.setVisible(true);
         } else {
             Scheduler schedule = new Scheduler();
-        }        
+        }
     }
 }

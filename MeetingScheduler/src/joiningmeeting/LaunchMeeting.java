@@ -15,7 +15,7 @@ public class LaunchMeeting {
     private static final String KNOWLEDGEBASE_LOCATION="knowledgebase/";
     
     private String refName="";
-    
+            
     public LaunchMeeting(String url){        
         if(url.contains("zoom")){            
             refName="initzoom";
@@ -48,15 +48,18 @@ public class LaunchMeeting {
     }
     
     private void waitTillPageLoads() throws Exception{
-        new Robot().mouseMove(0, 200);
         boolean pageLoaded=false;
         int tried=0;
         int numberOfRefs=numberOfImages(refName);        
-        while(!pageLoaded&&tried<=150){            
+        while(!pageLoaded&&tried<=150){  
             Point[] point=new Point[numberOfRefs];
-            for (int i = 0; i < numberOfRefs; i++) {
-                point[i] = ssc.pointOnScreen(ImageIO.read(rsc.load(KNOWLEDGEBASE_LOCATION+refName+".png")), 500);
+            System.out.println(point.length);
+            for (int i = 0; i < point.length; i++) {
+                System.out.println(i);
+                point[i] = ssc.pointOnScreen(ImageIO.read(rsc.load(KNOWLEDGEBASE_LOCATION+refName+i+".png")), 200);
+                Thread.sleep(300);
                 if(point[i]!=null){ 
+                    System.out.println(KNOWLEDGEBASE_LOCATION+refName+i+".png");
                     pageLoaded=true;
                     break;
                 }
@@ -64,7 +67,7 @@ public class LaunchMeeting {
             Thread.sleep(1500);
             tried++;
             System.out.println(tried);
-        }        
+        }
     }
     
     public void launchMeeting(){
@@ -78,7 +81,7 @@ public class LaunchMeeting {
             r.keyPress(10);
             r.keyRelease(10);
         } catch (Exception ex) {
-            System.out.println(ex);
+            System.out.println("l : "+ex);
         }
 
     }
@@ -86,7 +89,6 @@ public class LaunchMeeting {
     public synchronized void pressJoinButton(String img_name,int wait){
         try{
             Robot robot = new Robot();
-            robot.mouseMove(0, 200);
             Thread.sleep(wait);
             int numberOfImages=numberOfImages(img_name);
             Point[] point=new Point[numberOfImages];

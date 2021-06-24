@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.URL;
+import java.util.Calendar;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,8 +36,10 @@ import resourceloader.ResourceLoader;
 
 public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener,WindowListener {
 
-    private static final int COMPONENTS = 7;
-    private static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
+    public static final int COMPONENTS = 7;
+    public static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
+    public static long[][] timeArray=new long[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+    public static String[][] inviteUrl=new String[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     private JTabbedPane tp = new JTabbedPane();
     public JPanel[] panel = new JPanel[COMPONENTS];
     private JSpinner[] sp = new JSpinner[COMPONENTS];
@@ -70,7 +73,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public final JLabel infoLabel = new JLabel(info);
     
     public final Information inf = new Information();
-    
+       
     public GUIWindow() {
         initComponents();
     }
@@ -236,10 +239,12 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                 for (int i = 0; i < COMPONENTS; i++) {
                     for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
-                            dataProvided = true;
+                            dataProvided = true;                            
                             String time = timeField[i][j].getText();
+                            timeArray[i][j]=getTime(wd.retrieveHour(time),wd.retrieveMinute(time));
                             String url = urlField[i][j].getText();
-                            if (isTimeValid(time) && isUrlValid(url)) {
+                            inviteUrl[i][j] = url;
+                            if (isTimeValid(time)&& isUrlValid(url)) {
                                 dotLabel[i][j].setIcon(green);
                                 dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
                                         + "activated fields. Time must be provided in 24-hour format.");
@@ -247,6 +252,15 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                                 allDataCorrect = false;
                                 dotLabel[i][j].setIcon(red);
                                 dotLabel[i][j].setToolTipText("Invalid information provieded!");
+                            }
+                        }    
+                    }
+                }
+                for (int i = 0; i < COMPONENTS; i++) {
+                    for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
+                        for (int k = j + 1; k < MAXIMUM_NUMBER_OF_MEETINGS; k++) {
+                            if (timeArray[i][k] != 0 && (timeArray[i][k] < timeArray[i][j])) {
+                                swapValues(i, j, k);
                             }
                         }
                     }
@@ -265,6 +279,18 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         };
         thread.start();
     }
+    
+    private void swapValues(int index,int i,int j){
+        long temp = timeArray[index][i];
+        timeArray[index][i]=timeArray[index][j];
+        timeArray[index][j]=temp;
+        String tempTime = timeField[index][i].getText();
+        timeField[index][i].setText(timeField[index][j].getText());
+        timeField[index][j].setText(tempTime);
+        String tempUrl = urlField[index][i].getText();
+        urlField[index][i].setText(urlField[index][j].getText());
+        urlField[index][j].setText(tempUrl);
+    }
 
     public boolean isTimeValid(String text) {
         try {
@@ -277,6 +303,17 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             return false;
         }
         return true;
+    }
+    
+    private long getTime(String hour,String minute){
+        int h=Integer.parseInt(hour);
+        int m=Integer.parseInt(minute);
+        Calendar time=Calendar.getInstance();
+        time.set(Calendar.HOUR_OF_DAY,h);
+        time.set(Calendar.MINUTE,m);
+        time.set(Calendar.SECOND,0);
+        time.set(Calendar.MILLISECOND,m);
+        return time.getTimeInMillis();
     }
 
     public boolean isUrlValid(String url) {

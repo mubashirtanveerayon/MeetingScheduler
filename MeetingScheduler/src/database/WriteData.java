@@ -12,7 +12,7 @@ public class WriteData {
 
     private final Database db = new Database();
     private final TranslateUrl turl=new TranslateUrl();
-    
+        
     public void write() {
         db.initDatabase();
         try {
@@ -24,8 +24,8 @@ public class WriteData {
             JOptionPane.showMessageDialog(null, "Could not connect with database!","Error",JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < GUIWindow.COMPONENTS; i++) {
+            for (int j = 0; j < GUIWindow.MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {
                     String time = GUIWindow.timeField[i][j].getText();
                     String url = GUIWindow.urlField[i][j].getText().trim();
@@ -69,5 +69,5 @@ public class WriteData {
         StringBuffer sb = new StringBuffer(data);
         return String.valueOf(sb.delete(indexOfColon, data.length()));
     }
-   
+    
 }

@@ -87,13 +87,16 @@ public class Scheduler extends GUIWindow {
                 System.out.println(ex);
             }
         }
+        checkScheduledMeeting().start();
     }
 
     private String getDay() {
         return d.format(dt).toLowerCase();
     }
+    
+    
 
-    private void pressKeys(String meetingUrl) {
+    private synchronized void pressKeys(String meetingUrl) {
         try{
             Robot robot=new Robot();
             Thread.sleep(10000);
@@ -108,7 +111,31 @@ public class Scheduler extends GUIWindow {
         }
         
     }
-
     
+    private Thread checkScheduledMeeting(){
+        Thread thread=new Thread(){
+            @Override 
+            public void run(){
+                while(true){
+                    boolean shouldExit=true;
+                    for(boolean scheduled:isScheduled){
+                        if(scheduled){
+                            shouldExit=false;
+                            break;
+                        }
+                    }
+                    if(shouldExit){
+                        try{
+                            Thread.sleep(130000);
+                        }catch(Exception ex){
+                            System.out.println(ex);
+                        }
+                        System.exit(0);
+                    }
+                }
+            }
+        };
+        return thread;
+    }
 
 }
