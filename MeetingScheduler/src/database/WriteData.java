@@ -55,7 +55,7 @@ public class WriteData {
             }
         }
         if(success){
-            JNotification notification = new JNotification("Success!", "All information has been saved successfully!", JNotification.DONE_MESSAGE);
+            JNotification notification = new JNotification("Success!", "All information has been saved successfully!", JNotification.DONE_ICON);
             notification.setWidth(500);
             notification.setBackgroundColor(new Color(30, 255, 30));
             notification.setTitleColor(new Color(50, 50, 50));
@@ -64,12 +64,12 @@ public class WriteData {
             notification.setBorderColor(Color.black);
             notification.send();
         }else{
-            JNotification notification = new JNotification("Error", "Something went wrong.", JNotification.ERROR_MESSAGE);
-            notification.setBackgroundColor(new Color(200, 50, 50));
-            notification.setTitleColor(new Color(50, 50, 50));
-            notification.setBodyColor(new Color(0, 0, 0));
-            notification.setBorderColor(Color.black);
-            notification.send();
+            try{
+                JNotification notification = new JNotification(JNotification.ERROR_MESSAGE);
+                notification.send();
+            }catch(Exception ex){
+                System.out.println(ex);
+            }
         }
         JOptionPane.showMessageDialog(null, "The application will keep running in the background if you have any meeting scheduled for today.");
         JOptionPane.showMessageDialog(null, "If you want to reset your data, delete the 'delete_me_to_reset_data.db' file and restart the app."

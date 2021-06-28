@@ -5,8 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import javax.swing.JOptionPane;
+import mslinks.ShellLink;
 import notification.JNotification;
 import schedulemeeting.Scheduler;
 
@@ -24,14 +24,14 @@ public class MainClass{
             Scheduler schedule = new Scheduler();
             String osName= System.getProperty("os.name");
             if(osName.equalsIgnoreCase("windows 10")){
-                File dst=new File(System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Meeting Scheduler.exe - Shortcut.lnk");
+                String dest=System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Meeting Scheduler.exe - Shortcut.lnk";
+                File dst=new File(dest);
                 if(!dst.exists()&&!new File("lib/lock").exists()){
                     int opt=JOptionPane.showConfirmDialog(null,"Would you like Meeting Scheduler to start on Windows startup?",
                             "Meeting Scheduler",JOptionPane.YES_NO_OPTION);
                     if(opt==JOptionPane.YES_OPTION){
-                        File src=new File("lib\\MS.lnk");
                         try {
-                            Files.copy(src.toPath(), dst.toPath());
+                            ShellLink.createLink("Meeting Scheduler.exe", dest);
                             JNotification notification = new JNotification(JNotification.DONE_MESSAGE);
                             notification.send();
                         } catch (Exception ex) {
