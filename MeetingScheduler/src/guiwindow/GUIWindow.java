@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.net.URL;
 import java.util.Calendar;
 import javax.swing.BorderFactory;
@@ -32,6 +33,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import main.MainClass;
+import notification.JNotification;
 import resourceloader.ResourceLoader;
 
 public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener,WindowListener {
@@ -73,7 +76,9 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public final JLabel infoLabel = new JLabel(info);
     
     public final Information inf = new Information();
-       
+    
+    public final JLabel resetLabel = new JLabel("Reset database?");
+
     public GUIWindow() {
         initComponents();
     }
@@ -87,17 +92,6 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         container.setLayout(cardLayout);
         frame.setResizable(false);
         frame.addWindowListener(this);
-
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
 
         tp.setBounds(60, 10, 390, 440);
         tp.setBackground(new Color(169, 177, 186));
@@ -182,15 +176,21 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         
         closeLabel1.setForeground(Color.white);
         closeLabel1.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel1.setBounds(8,20,510,50);
+        closeLabel1.setBounds(8,15,510,50);
         
         closeLabel2.setForeground(Color.white);
         closeLabel2.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel2.setBounds(35,60,510,50);
+        closeLabel2.setBounds(35,55,510,50);
         
         closeLabel3.setForeground(Color.white);
         closeLabel3.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel3.setBounds(100,100,510,50);
+        closeLabel3.setBounds(100,95,510,50);
+               
+        resetLabel.setBounds(120, 145, 150, 20);
+        resetLabel.setFont(new Font("Monospaced", Font.PLAIN, 17));
+        resetLabel.setForeground(new Color(88, 180, 255));
+        resetLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        resetLabel.addMouseListener(this);
 
         panel1.add(infoLabel);
         panel2.add(closeLabel1);
@@ -414,6 +414,39 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                 inf.setVisible(false);
             }else{
                 inf.setVisible(true);
+            }
+        }
+        if(e.getSource()==resetLabel){
+            int opt=JOptionPane.showConfirmDialog(null,"Are you sure, you want to reset the database?","Reset database",JOptionPane.YES_NO_OPTION);
+            if(opt==JOptionPane.YES_OPTION){
+                if(new File("delete_me_to_reset_data.db").delete()){
+                    JNotification notification = new JNotification("Success","Successfully resetted database!",JNotification.DONE_MESSAGE);
+                    notification.setBackgroundColor(new Color(30, 255, 30));
+                    notification.setTitleColor(new Color(50, 50, 50));
+                    notification.setBodyColor(new Color(0, 0, 0));
+                    notification.setBodyFont(new Font("Monospaced", Font.PLAIN, 18));
+                    notification.setBorderColor(Color.black);
+                    notification.setBorderThickness(2);
+                    notification.send();
+                    int res = JOptionPane.showConfirmDialog(null, "For changes to take effect you'll need to restart Meeting Scheduler."
+                            + " Do you want to restart now?","Restart",JOptionPane.YES_NO_OPTION);
+                    if(res==JOptionPane.YES_OPTION){
+                        frame.setVisible(false);
+                        try{
+                            Thread.sleep(2000);
+                        }catch(Exception ex){
+                            System.out.println(ex);
+                        }
+                        MainClass mc = new MainClass();
+                    }
+                }else{
+                    try{
+                        JNotification notification=new JNotification(JNotification.ERROR_MESSAGE);
+                        notification.send();
+                    }catch(Exception ex){
+                        System.out.println(ex);
+                    }
+                }
             }
         }
     }

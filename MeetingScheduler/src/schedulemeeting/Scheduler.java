@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import translation.TranslateUrl;
 
-public class Scheduler extends GUIWindow {
+public class Scheduler extends GUIWindow{
 
     SimpleDateFormat d = new SimpleDateFormat("EEEEEEEEEEEE");
     SimpleDateFormat h = new SimpleDateFormat("HH");
@@ -34,10 +34,12 @@ public class Scheduler extends GUIWindow {
 
     public Scheduler() {
         if (nofmeetings != 0) {
-            infoLabel.setLocation(355,135);
+            frame.setBounds(500, 250, 400, 210);
+            infoLabel.setLocation(355,145);
             panel2.add(infoLabel);
+            panel2.add(resetLabel);
             cardLayout.show(container, "second");
-            frame.setBounds(500, 250, 400, 200);
+            
             frame.setState(Frame.ICONIFIED);
             frame.setVisible(true);
         }else{
@@ -126,7 +128,7 @@ public class Scheduler extends GUIWindow {
                     }
                     if(shouldExit){
                         try{
-                            Thread.sleep(130000);
+                            Thread.sleep(150000);
                         }catch(Exception ex){
                             System.out.println(ex);
                         }

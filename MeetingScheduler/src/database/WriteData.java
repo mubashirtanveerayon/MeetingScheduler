@@ -1,11 +1,14 @@
 package database;
 
 import guiwindow.GUIWindow;
+import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import main.MainClass;
+import notification.JNotification;
 import translation.TranslateUrl;
 
 public class WriteData {
@@ -24,6 +27,7 @@ public class WriteData {
             JOptionPane.showMessageDialog(null, "Could not connect with database!","Error",JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
+        boolean success=true;
         for (int i = 0; i < GUIWindow.COMPONENTS; i++) {
             for (int j = 0; j < GUIWindow.MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {
@@ -36,23 +40,40 @@ public class WriteData {
                         ps = connect.prepareStatement(sql);
                         ps.execute();
                     } catch (Exception ex) {
+                        success=false;
                         System.out.println(ex);
                     } finally {
                         try {
                             ps.close();
                             connect.close();
                         } catch (Exception ex) {
+                            success=false;
                             System.out.println(ex);
                         }
                     }
                 }
             }
         }
-        System.out.println("All data has been written successfully!");
-        JOptionPane.showMessageDialog(null, "All data has been saved successfully.");
+        if(success){
+            JNotification notification = new JNotification("Success!", "All information has been saved successfully!", JNotification.DONE_MESSAGE);
+            notification.setWidth(500);
+            notification.setBackgroundColor(new Color(30, 255, 30));
+            notification.setTitleColor(new Color(50, 50, 50));
+            notification.setBodyColor(new Color(0, 0, 0));
+            notification.setBodyFont(new Font("Monospaced", Font.PLAIN, 18));
+            notification.setBorderColor(Color.black);
+            notification.send();
+        }else{
+            JNotification notification = new JNotification("Error", "Something went wrong.", JNotification.ERROR_MESSAGE);
+            notification.setBackgroundColor(new Color(200, 50, 50));
+            notification.setTitleColor(new Color(50, 50, 50));
+            notification.setBodyColor(new Color(0, 0, 0));
+            notification.setBorderColor(Color.black);
+            notification.send();
+        }
         JOptionPane.showMessageDialog(null, "The application will keep running in the background if you have any meeting scheduled for today.");
         JOptionPane.showMessageDialog(null, "If you want to reset your data, delete the 'delete_me_to_reset_data.db' file and restart the app."
-                +"\nYou will be redirected to the window where you will be able to provide your meeting data again.");
+                +"\n You will be redirected to the window where you will be able to provide your meeting data again.");
         MainClass mc = new MainClass();
     }
 
