@@ -62,7 +62,7 @@ public class Scheduler extends GUIWindow{
                         for (int k = 0; k < nofmeetings; k++) {
                             if(isScheduled[k]){
                                 isScheduled[k]=false;
-                                String meetingUrl = turl.translate(url[k], false);
+                                String meetingUrl = turl.hash(url[k]);
                                 desk.browse(new URI(meetingUrl));
                                 pressKeys(meetingUrl);
                                 break;

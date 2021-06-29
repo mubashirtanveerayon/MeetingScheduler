@@ -33,7 +33,7 @@ public class WriteData {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {
                     String time = GUIWindow.timeField[i][j].getText();
                     String url = GUIWindow.urlField[i][j].getText().trim();
-                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",'" + turl.translate(url,true) + "')";
+                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",'" + turl.hash(url) + "')";
                     Connection connect = db.establishConnection();
                     PreparedStatement ps = null;
                     try {

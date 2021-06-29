@@ -29,8 +29,6 @@ import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import main.MainClass;
@@ -41,22 +39,32 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
 
     public static final int COMPONENTS = 7;
     public static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
+    
     public static long[][] timeArray=new long[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     public static String[][] inviteUrl=new String[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+    
     private JTabbedPane tp = new JTabbedPane();
     public JPanel[] panel = new JPanel[COMPONENTS];
     private JSpinner[] sp = new JSpinner[COMPONENTS];
+    
     private final JLabel[] spLabel = new JLabel[COMPONENTS];
     private final JLabel[] urlLabel = new JLabel[COMPONENTS];
     private final JLabel[] timeLabel = new JLabel[COMPONENTS];
+    
     public static JTextField[][] urlField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     public static JTextField[][] timeField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+    
     private ResourceLoader rsc = new ResourceLoader();
+    
     private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+    
     public JPanel panel1=new JPanel(null);
     public JPanel panel2=new JPanel(null);
+    
     public CardLayout cardLayout=new CardLayout();
+    
     public Container container;
+    
     private final JLabel closeLabel1=new JLabel("Closeing this window will");
     private final JLabel closeLabel2=new JLabel("force the application");
     private final JLabel closeLabel3=new JLabel("to shut down!");
@@ -71,6 +79,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     private final ImageIcon green = new ImageIcon(rsc.load("res/green.png"));
     private final ImageIcon info = new ImageIcon(rsc.load("res/infoic.png"));
     private final ImageIcon red = new ImageIcon(rsc.load("res/red.png"));
+    private final ImageIcon icon = new ImageIcon(rsc.load("res/icon.png"));
     public JFrame frame=new JFrame("Meeting Scheduler");
     
     public final JLabel infoLabel = new JLabel(info);
@@ -91,6 +100,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         frame.setDefaultCloseOperation(0);
         container.setLayout(cardLayout);
         frame.setResizable(false);
+        frame.setIconImage(icon.getImage());
         frame.addWindowListener(this);
 
         tp.setBounds(60, 10, 390, 440);

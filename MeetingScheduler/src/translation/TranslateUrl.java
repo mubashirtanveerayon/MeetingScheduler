@@ -2,16 +2,12 @@ package translation;
 
 public class TranslateUrl {
 
-    public String translate(String txt, boolean isEncrypting) {
+    public String hash(String txt) {
         String text = txt, maintext = "";
         for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) >= 'A' && text.charAt(i) <= 'z') {
-                maintext += (char) (122 - text.charAt(i) + 65);
-            } else {
-                maintext += text.charAt(i);
-            }
+            maintext += (char) (158 - text.charAt(i));
         }
-        return isEncrypting?maintext.replace("://", "|"):maintext.replace("|", "://");
+        return maintext;
     }
 
 }
