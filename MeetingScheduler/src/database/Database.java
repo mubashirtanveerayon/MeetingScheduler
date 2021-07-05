@@ -25,7 +25,7 @@ public class Database {
             @Override
             public void run() {
                 for (int i = 0; i < 7; i++) {
-                    String sql = "create table " + GUIWindow.title[i] + "(n integer,h integer,m integer, url varchar(100))";
+                    String sql = "create table " + GUIWindow.title[i] + "(n integer,h integer,m integer, url varchar(150))";
                     Connection connect = establishConnection();
                     PreparedStatement ps = null;
                     try {
@@ -33,7 +33,7 @@ public class Database {
                         ps.execute();
 
                     } catch (Exception ex) {
-                        System.out.println(ex);
+                        System.out.println("init "+ex);
                     } finally {
                         try {
                             ps.close();

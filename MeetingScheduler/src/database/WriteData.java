@@ -1,8 +1,6 @@
 package database;
 
 import guiwindow.GUIWindow;
-import java.awt.Color;
-import java.awt.Font;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,7 +31,7 @@ public class WriteData {
                 if (GUIWindow.timeField[i][j].isEnabled() && GUIWindow.urlField[i][j].isEnabled()) {
                     String time = GUIWindow.timeField[i][j].getText();
                     String url = GUIWindow.urlField[i][j].getText().trim();
-                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",'" + turl.hash(url) + "')";
+                    String sql = "insert into " + GUIWindow.title[i] + " values (" + j + "," + retrieveHour(time) + "," + retrieveMinute(time) + ",\"" + turl.hash(url) + "\")";
                     Connection connect = db.establishConnection();
                     PreparedStatement ps = null;
                     try {
@@ -55,14 +53,13 @@ public class WriteData {
             }
         }
         if(success){
-            JNotification notification = new JNotification("Success!", "All information has been saved successfully!", JNotification.DONE_ICON);
-            notification.setWidth(500);
-            notification.setBackgroundColor(new Color(30, 255, 30));
-            notification.setTitleColor(new Color(50, 50, 50));
-            notification.setBodyColor(new Color(0, 0, 0));
-            notification.setBodyFont(new Font("Monospaced", Font.PLAIN, 18));
-            notification.setBorderColor(Color.black);
-            notification.send();
+            JNotification notification;
+            try {
+                notification = new JNotification(JNotification.DONE_MESSAGE);
+                notification.send();
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }            
         }else{
             try{
                 JNotification notification = new JNotification(JNotification.ERROR_MESSAGE);

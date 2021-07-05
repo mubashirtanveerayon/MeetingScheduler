@@ -33,10 +33,10 @@ public class Information extends JFrame implements MouseListener{
         this.add(inf1);
         
         ver = new JLabel();
-        ver.setText("Version 1.4");
+        ver.setText("Version 1.4.0");
         ver.setForeground(Color.white);
         ver.setFont(new Font("Aerial",Font.ITALIC,15));
-        ver.setBounds(170,117,80,20);
+        ver.setBounds(170,117,100,20);
         this.add(ver);
         
         txt1 = new JLabel("Created and developed");

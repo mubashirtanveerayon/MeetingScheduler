@@ -24,9 +24,9 @@ public class Scheduler extends GUIWindow{
     Date dt = new Date();
 
     String day = getDay();
-    int nofmeetings = db.getNumberOfMeetings(day);
-    int[] hour = db.getHour(day);
-    int[] minute = db.getMinute(day);
+    int nofmeetings = db.getNumberOfMeetings(day);//gets the number of meetings for that day
+    int[] hour = db.getHour(day);//gets meeting hour and stores it into an array
+    int[] minute = db.getMinute(day);////gets meeting minute and stores it into an array
     String[] url = db.getMeetingUrl(day);
     boolean[] isScheduled=new boolean[nofmeetings];
    
@@ -34,12 +34,13 @@ public class Scheduler extends GUIWindow{
 
     public Scheduler() {
         if (nofmeetings != 0) {
-            frame.setBounds(500, 250, 400, 210);
-            infoLabel.setLocation(355,145);
+            //this window shows up if we have any meeting scheduled for that particular day
+            frame.setBounds(500, 250, 450, 210);
+            infoLabel.setLocation(410,145);
             panel2.add(infoLabel);
             panel2.add(resetLabel);
-            cardLayout.show(container, "second");
-            
+            panel2.add(startupLabel);
+            cardLayout.show(container, "second");           
             frame.setState(Frame.ICONIFIED);
             frame.setVisible(true);
         }else{
@@ -102,7 +103,7 @@ public class Scheduler extends GUIWindow{
         try{
             Robot robot=new Robot();
             Thread.sleep(10000);
-            robot.keyPress(KeyEvent.VK_F11);
+            robot.keyPress(KeyEvent.VK_F11);//for making the browser go fullscreen
             robot.keyRelease(KeyEvent.VK_F11);
         }catch(Exception ex){
             System.out.println(ex);

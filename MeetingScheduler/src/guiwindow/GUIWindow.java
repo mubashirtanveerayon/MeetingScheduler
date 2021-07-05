@@ -32,6 +32,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import main.MainClass;
+import mslinks.ShellLink;
 import notification.JNotification;
 import resourceloader.ResourceLoader;
 
@@ -41,7 +42,6 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
     
     public static long[][] timeArray=new long[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-    public static String[][] inviteUrl=new String[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     
     private JTabbedPane tp = new JTabbedPane();
     public JPanel[] panel = new JPanel[COMPONENTS];
@@ -65,7 +65,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     
     public Container container;
     
-    private final JLabel closeLabel1=new JLabel("Closeing this window will");
+    private final JLabel closeLabel1=new JLabel("Closing this window will");
     private final JLabel closeLabel2=new JLabel("force the application");
     private final JLabel closeLabel3=new JLabel("to shut down!");
     
@@ -87,6 +87,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public final Information inf = new Information();
     
     public final JLabel resetLabel = new JLabel("Reset database?");
+    public final JLabel startupLabel = new JLabel("Start MS on windows startup?");
 
     public GUIWindow() {
         initComponents();
@@ -186,18 +187,24 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         
         closeLabel1.setForeground(Color.white);
         closeLabel1.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel1.setBounds(8,15,510,50);
+        closeLabel1.setBounds(33,15,510,50);
         
         closeLabel2.setForeground(Color.white);
         closeLabel2.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel2.setBounds(35,55,510,50);
+        closeLabel2.setBounds(60,55,510,50);
         
         closeLabel3.setForeground(Color.white);
         closeLabel3.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel3.setBounds(100,95,510,50);
+        closeLabel3.setBounds(125,95,510,50);
+        
+        startupLabel.setBounds(20,145,230,20);
+        startupLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        startupLabel.setForeground(new Color(88, 180, 255));
+        startupLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        startupLabel.addMouseListener(this);
                
-        resetLabel.setBounds(120, 145, 150, 20);
-        resetLabel.setFont(new Font("Monospaced", Font.PLAIN, 17));
+        resetLabel.setBounds(270, 145, 150, 20);
+        resetLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         resetLabel.setForeground(new Color(88, 180, 255));
         resetLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         resetLabel.addMouseListener(this);
@@ -251,17 +258,21 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
                             dataProvided = true;                            
                             String time = timeField[i][j].getText();
-                            timeArray[i][j]=getTime(wd.retrieveHour(time),wd.retrieveMinute(time));
                             String url = urlField[i][j].getText();
-                            inviteUrl[i][j] = url;
-                            if (isTimeValid(time)&& isUrlValid(url)) {
-                                dotLabel[i][j].setIcon(green);
-                                dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
-                                        + "activated fields. Time must be provided in 24-hour format.");
-                            } else {
-                                allDataCorrect = false;
-                                dotLabel[i][j].setIcon(red);
-                                dotLabel[i][j].setToolTipText("Invalid information provieded!");
+                            try{
+                                if (isTimeValid(time) && isUrlValid(url)) {
+                                    timeArray[i][j] = getTime(wd.retrieveHour(time), wd.retrieveMinute(time));
+                                    dotLabel[i][j].setIcon(green);
+                                    dotLabel[i][j].setToolTipText("Field Activated! Please provide valid information in the\n"
+                                            + "activated fields. Time must be provided in 24-hour format.");
+                                } else {
+                                    allDataCorrect = false;
+                                    dotLabel[i][j].setIcon(red);
+                                    dotLabel[i][j].setToolTipText("Invalid information provieded!");
+                                }
+                            }catch(Exception ex){
+                                allDataCorrect=false;
+                                System.out.println(ex);
                             }
                         }    
                     }
@@ -430,14 +441,12 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             int opt=JOptionPane.showConfirmDialog(null,"Are you sure, you want to reset the database?","Reset database",JOptionPane.YES_NO_OPTION);
             if(opt==JOptionPane.YES_OPTION){
                 if(new File("delete_me_to_reset_data.db").delete()){
-                    JNotification notification = new JNotification("Success","Successfully resetted database!",JNotification.DONE_MESSAGE);
-                    notification.setBackgroundColor(new Color(30, 255, 30));
-                    notification.setTitleColor(new Color(50, 50, 50));
-                    notification.setBodyColor(new Color(0, 0, 0));
-                    notification.setBodyFont(new Font("Monospaced", Font.PLAIN, 18));
-                    notification.setBorderColor(Color.black);
-                    notification.setBorderThickness(2);
-                    notification.send();
+                    try{
+                        JNotification notification=new JNotification(JNotification.DONE_MESSAGE);
+                        notification.send();
+                    }catch(Exception ex){
+                        System.out.println(ex);
+                    }
                     int res = JOptionPane.showConfirmDialog(null, "For changes to take effect you'll need to restart Meeting Scheduler."
                             + " Do you want to restart now?","Restart",JOptionPane.YES_NO_OPTION);
                     if(res==JOptionPane.YES_OPTION){
@@ -457,6 +466,37 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                         System.out.println(ex);
                     }
                 }
+            }
+        }
+        if(e.getSource()==startupLabel){
+            String osName= System.getProperty("os.name");
+            if(osName.equalsIgnoreCase("windows 10")){
+                String dest=System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Meeting Scheduler.exe - Shortcut.lnk";
+                File dst=new File(dest);
+                if(!dst.exists()){
+                    int opt=JOptionPane.showConfirmDialog(null,"Do you want Meeting Scheduler to start on Windows startup?",
+                            "Meeting Scheduler",JOptionPane.YES_NO_OPTION);
+                    if(opt==JOptionPane.YES_OPTION){
+                        try {
+                            ShellLink.createLink("Meeting Scheduler.exe", dest);
+                            JNotification notification = new JNotification(JNotification.DONE_MESSAGE);
+                            notification.send();
+                        } catch (Exception ex) {
+                            System.out.println(ex);
+                            JNotification notification;
+                            try {
+                                notification = new JNotification(JNotification.ERROR_MESSAGE);
+                                notification.send();
+                            } catch (Exception ex1) {
+                                System.out.println(ex1);
+                            }                            
+                        }
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null, "Meeting Scheduler will start on windows startup.");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "This feature requires Windows 10 to be the primary operating system of this pc!","Error",JOptionPane.ERROR_MESSAGE);
             }
         }
     }

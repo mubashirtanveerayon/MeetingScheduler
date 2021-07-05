@@ -15,7 +15,7 @@ public class LaunchMeeting {
     private static final String KNOWLEDGEBASE_LOCATION="knowledgebase/";
     
     private String refName="";
-            
+    
     public LaunchMeeting(String url){        
         if(url.contains("zoom")){            
             refName="initzoom";
@@ -53,20 +53,26 @@ public class LaunchMeeting {
         int numberOfRefs=numberOfImages(refName);        
         while(!pageLoaded&&tried<=150){  
             Point[] point=new Point[numberOfRefs];
-            System.out.println(point.length);
             for (int i = 0; i < point.length; i++) {
-                System.out.println(i);
-                point[i] = ssc.pointOnScreen(ImageIO.read(rsc.load(KNOWLEDGEBASE_LOCATION+refName+i+".png")), 200);
-                Thread.sleep(300);
+                point[i] = ssc.pointOnScreen(ImageIO.read(rsc.load(KNOWLEDGEBASE_LOCATION+refName+i+".png")), 100);
+                Thread.sleep(400);
                 if(point[i]!=null){ 
-                    System.out.println(KNOWLEDGEBASE_LOCATION+refName+i+".png");
+                    Robot r=new Robot();
+                    if(i==0||refName.contains("meet")){
+                        r.mouseMove(point[i].x-200,point[i].y);
+                        r.mousePress(MouseEvent.BUTTON1_DOWN_MASK);
+                        r.mouseRelease(MouseEvent.BUTTON1_DOWN_MASK);
+                    }else{
+                        r.mouseMove(point[i].x,point[i].y);
+                        r.mousePress(MouseEvent.BUTTON1_DOWN_MASK);
+                        r.mouseRelease(MouseEvent.BUTTON1_DOWN_MASK);
+                    }
                     pageLoaded=true;
                     break;
                 }
             }
             Thread.sleep(1500);
             tried++;
-            System.out.println(tried);
         }
     }
     
@@ -81,7 +87,7 @@ public class LaunchMeeting {
             r.keyPress(10);
             r.keyRelease(10);
         } catch (Exception ex) {
-            System.out.println("l : "+ex);
+            System.out.println(ex);
         }
 
     }
