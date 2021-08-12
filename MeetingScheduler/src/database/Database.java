@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import main.MainClass;
 
 public class Database {
     
@@ -12,7 +13,7 @@ public class Database {
         Connection connect = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:delete_me_to_reset_data.db");
+            connect = DriverManager.getConnection("jdbc:sqlite:"+MainClass.DATABASE_LOCATION+MainClass.DATABASE_NAME);
             System.out.println("Database connected!");
         } catch (Exception ex) {
             System.out.println(ex);
@@ -33,7 +34,7 @@ public class Database {
                         ps.execute();
 
                     } catch (Exception ex) {
-                        System.out.println("init "+ex);
+                        System.out.println(ex);
                     } finally {
                         try {
                             ps.close();
