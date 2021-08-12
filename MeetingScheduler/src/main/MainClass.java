@@ -15,8 +15,9 @@ public class MainClass{
     }
 
     public MainClass() {
-        if(System.getProperty("os.name").toLowerCase().contains("windows")){
-            DATABASE_LOCATION=System.getProperty("user.home")+"\\Documents\\Meeting Scheduler\\";
+		String osName=System.getProperty("os.name").toLowerCase();
+        if(osName.contains("windows")||osName.contains("linux")){
+            DATABASE_LOCATION=System.getProperty("user.home")+File.seperator+"Documents"+File.seperator+"Meeting Scheduler"+File.seperator;
         }
         if(!new File(DATABASE_LOCATION+DATABASE_NAME).exists()){
             new File(DATABASE_LOCATION).mkdir();
