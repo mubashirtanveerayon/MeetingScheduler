@@ -72,7 +72,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     private JButton confirm = new JButton("Confirm");
-    private JButton validate = new JButton("Validate");
+    private JButton verify = new JButton("Verify");
 
     public WriteData wd = new WriteData();
 
@@ -177,13 +177,13 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         confirm.addActionListener(this);
         confirm.addMouseListener(this);
 
-        validate.setBounds(260, 460, 150, 35);
-        validate.setFont(new Font("Arial", Font.PLAIN, 20));
-        validate.addActionListener(this);
-        validate.addMouseListener(this);
-        validate.setBackground(null);
-        validate.setForeground(Color.white);
-        validate.setFocusable(false);
+        verify.setBounds(260, 460, 150, 35);
+        verify.setFont(new Font("Arial", Font.PLAIN, 20));
+        verify.addActionListener(this);
+        verify.addMouseListener(this);
+        verify.setBackground(null);
+        verify.setForeground(Color.white);
+        verify.setFocusable(false);
         
         closeLabel1.setForeground(Color.white);
         closeLabel1.setFont(new Font("Monospaced",Font.PLAIN,25));
@@ -213,7 +213,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         panel2.add(closeLabel1);
         panel2.add(closeLabel2);
         panel2.add(closeLabel3);
-        panel1.add(validate);
+        panel1.add(verify);
         panel1.add(confirm);
         panel1.add(tp);
         
@@ -244,13 +244,13 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         return length;
     }
 
-    private void validateData() {
+    private void verifyData() {
         confirm.setEnabled(false);
         Thread thread = new Thread() {
             @Override
             public void run() {
                 boolean allDataCorrect = true;
-                JOptionPane.showMessageDialog(null, "Please be patient while the application is validating your data."
+                JOptionPane.showMessageDialog(null, "Please be patient while the application is verifies your data."
                         + "\n Make sure that you have a stable internet connection.");
                 boolean dataProvided = false;
                 for (int i = 0; i < COMPONENTS; i++) {
@@ -286,7 +286,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                         }
                     }
                 }
-                JOptionPane.showMessageDialog(null, "Data validation complete!");
+                JOptionPane.showMessageDialog(null, "Data verification complete!");
                 if (allDataCorrect && dataProvided) {
                     confirm.setEnabled(true);
                 } else if (!dataProvided) {
@@ -392,8 +392,8 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             thread.start();
         }
 
-        if (e.getSource() == validate) {
-            validateData();
+        if (e.getSource() == verify) {
+            verifyData();
         }
 
     }
@@ -440,7 +440,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         if(e.getSource()==resetLabel){
             int opt=JOptionPane.showConfirmDialog(null,"Are you sure, you want to reset the database?","Reset database",JOptionPane.YES_NO_OPTION);
             if(opt==JOptionPane.YES_OPTION){
-                if(new File("delete_me_to_reset_data.db").delete()){
+                if(new File(MainClass.DATABASE_LOCATION+MainClass.DATABASE_NAME).delete()){
                     try{
                         JNotification notification=new JNotification(JNotification.DONE_MESSAGE);
                         notification.send();
@@ -517,9 +517,9 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             confirm.setBackground(Color.white);
             confirm.setForeground(Color.black);
         }
-        if (e.getSource() == validate) {
-            validate.setBackground(Color.white);
-            validate.setForeground(Color.black);
+        if (e.getSource() == verify) {
+            verify.setBackground(Color.white);
+            verify.setForeground(Color.black);
         }
     }
 
@@ -529,9 +529,9 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
             confirm.setBackground(null);
             confirm.setForeground(Color.white);
         }
-        if (e.getSource() == validate) {
-            validate.setBackground(null);
-            validate.setForeground(Color.white);
+        if (e.getSource() == verify) {
+            verify.setBackground(null);
+            verify.setForeground(Color.white);
         }
     }
 

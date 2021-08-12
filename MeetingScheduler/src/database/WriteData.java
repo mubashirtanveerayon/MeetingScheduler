@@ -17,11 +17,11 @@ public class WriteData {
     public void write() {
         db.initDatabase();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (Exception ex) {
             System.out.println(ex);
         }
-        if(!new File("delete_me_to_reset_data.db").exists()){
+        if(!new File(MainClass.DATABASE_LOCATION+MainClass.DATABASE_NAME).exists()){
             JOptionPane.showMessageDialog(null, "Could not connect with database!","Error",JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -69,8 +69,6 @@ public class WriteData {
             }
         }
         JOptionPane.showMessageDialog(null, "The application will keep running in the background if you have any meeting scheduled for today.");
-        JOptionPane.showMessageDialog(null, "If you want to reset your data, delete the 'delete_me_to_reset_data.db' file and restart the app."
-                +"\n You will be redirected to the window where you will be able to provide your meeting data again.");
         MainClass mc = new MainClass();
     }
 

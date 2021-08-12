@@ -24,9 +24,9 @@ public class Scheduler extends GUIWindow{
     Date dt = new Date();
 
     String day = getDay();
-    int nofmeetings = db.getNumberOfMeetings(day);//gets the number of meetings for that day
-    int[] hour = db.getHour(day);//gets meeting hour and stores it into an array
-    int[] minute = db.getMinute(day);////gets meeting minute and stores it into an array
+    int nofmeetings = db.getNumberOfMeetings(day);
+    int[] hour = db.getHour(day);
+    int[] minute = db.getMinute(day);
     String[] url = db.getMeetingUrl(day);
     boolean[] isScheduled=new boolean[nofmeetings];
    
@@ -34,7 +34,6 @@ public class Scheduler extends GUIWindow{
 
     public Scheduler() {
         if (nofmeetings != 0) {
-            //this window shows up if we have any meeting scheduled for that particular day
             frame.setBounds(500, 250, 450, 210);
             infoLabel.setLocation(410,145);
             panel2.add(infoLabel);
@@ -82,7 +81,7 @@ public class Scheduler extends GUIWindow{
             calendar[i].set(Calendar.SECOND, 0);
             calendar[i].set(Calendar.MILLISECOND, 0);
             try {
-                if (dt.getTime() <= calendar[i].getTimeInMillis()+180000) {
+                if (dt.getTime() <= calendar[i].getTimeInMillis()+240000) {
                     isScheduled[i]=true;
                     timer[i].schedule(task[i], calendar[i].getTime());
                 }

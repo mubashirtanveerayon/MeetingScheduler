@@ -68,6 +68,7 @@ public class LaunchMeeting {
                         r.mouseRelease(MouseEvent.BUTTON1_DOWN_MASK);
                     }
                     pageLoaded=true;
+                    System.out.println("gg");
                     break;
                 }
             }
@@ -86,6 +87,7 @@ public class LaunchMeeting {
             r.delay(10);
             r.keyPress(10);
             r.keyRelease(10);
+            System.out.println("hh");
         } catch (Exception ex) {
             System.out.println(ex);
         }
