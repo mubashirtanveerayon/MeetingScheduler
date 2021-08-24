@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -79,7 +81,7 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     private final ImageIcon green = new ImageIcon(rsc.load("res/green.png"));
     private final ImageIcon info = new ImageIcon(rsc.load("res/infoic.png"));
     private final ImageIcon red = new ImageIcon(rsc.load("res/red.png"));
-    private final ImageIcon icon = new ImageIcon(rsc.load("res/icon.png"));
+    public final ImageIcon icon = new ImageIcon(rsc.load("res/icon.png"));
     public JFrame frame=new JFrame("Meeting Scheduler");
     
     public final JLabel infoLabel = new JLabel(info);
@@ -88,12 +90,28 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     
     public final JLabel resetLabel = new JLabel("Reset database?");
     public final JLabel startupLabel = new JLabel("Start MS on windows startup?");
+    
+    
+    public PopupMenu menu;
+    public MenuItem close;
+    public MenuItem action;
+    public boolean trayed=false;
 
     public GUIWindow() {
         initComponents();
     }
 
     private void initComponents() {
+        
+        menu = new PopupMenu();
+        close = new MenuItem("Close");
+        action = new MenuItem("Meeting Scheduler");
+        
+        close.addActionListener(this);
+        action.addActionListener(this);
+        
+        menu.add(close);
+        menu.add(action);
         
         container=frame.getContentPane();
        
@@ -394,6 +412,17 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
 
         if (e.getSource() == verify) {
             verifyData();
+        }
+        
+        if(e.getSource()==action&&trayed){
+             frame.setVisible(true);
+        }
+        
+        if(e.getSource()==close&&trayed){
+            int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?", "Meeting Scheduler", JOptionPane.YES_NO_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
         }
 
     }

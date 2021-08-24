@@ -7,7 +7,13 @@ import database.Database;
 import guiwindow.GUIWindow;
 import java.awt.Desktop;
 import java.awt.Frame;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.Robot;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.Calendar;
@@ -34,14 +40,31 @@ public class Scheduler extends GUIWindow{
 
     public Scheduler() {
         if (nofmeetings != 0) {
+            
+            
             frame.setBounds(500, 250, 450, 210);
             infoLabel.setLocation(410,145);
             panel2.add(infoLabel);
             panel2.add(resetLabel);
             panel2.add(startupLabel);
-            cardLayout.show(container, "second");           
-            frame.setState(Frame.ICONIFIED);
-            frame.setVisible(true);
+            cardLayout.show(container, "second"); 
+            
+            if(SystemTray.isSupported()){
+               SystemTray tray = SystemTray.getSystemTray();
+               Image img = icon.getImage();
+               TrayIcon trayIcon = new TrayIcon(img,"Meeting Scheduler",menu);
+                trayIcon.setImageAutoSize(true);
+                try{
+                    tray.add(trayIcon);
+                    trayed=true;
+                }catch(Exception ex){
+                    System.out.println(ex);
+                }
+            }
+            if(!trayed){
+                frame.setState(Frame.ICONIFIED);
+                frame.setVisible(true);
+            }
         }else{
             System.exit(0);
         }
