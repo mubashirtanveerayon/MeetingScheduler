@@ -38,39 +38,39 @@ import mslinks.ShellLink;
 import notification.JNotification;
 import resourceloader.ResourceLoader;
 
-public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener,WindowListener {
+public class GUIWindow implements ChangeListener, ActionListener, KeyListener, MouseListener, WindowListener {
 
     public static final int COMPONENTS = 7;
     public static final int MAXIMUM_NUMBER_OF_MEETINGS = 8;
-    
-    public static long[][] timeArray=new long[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-    
+
+    public static long[][] timeArray = new long[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
+
     private JTabbedPane tp = new JTabbedPane();
     public JPanel[] panel = new JPanel[COMPONENTS];
     private JSpinner[] sp = new JSpinner[COMPONENTS];
-    
+
     private final JLabel[] spLabel = new JLabel[COMPONENTS];
     private final JLabel[] urlLabel = new JLabel[COMPONENTS];
     private final JLabel[] timeLabel = new JLabel[COMPONENTS];
-    
+
     public static JTextField[][] urlField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
     public static JTextField[][] timeField = new JTextField[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-    
+
     private ResourceLoader rsc = new ResourceLoader();
-    
+
     private JLabel[][] dotLabel = new JLabel[COMPONENTS][MAXIMUM_NUMBER_OF_MEETINGS];
-    
-    public JPanel panel1=new JPanel(null);
-    public JPanel panel2=new JPanel(null);
-    
-    public CardLayout cardLayout=new CardLayout();
-    
+
+    public JPanel panel1 = new JPanel(null);
+    public JPanel panel2 = new JPanel(null);
+
+    public CardLayout cardLayout = new CardLayout();
+
     public Container container;
-    
-    private final JLabel closeLabel1=new JLabel("Closing this window will");
-    private final JLabel closeLabel2=new JLabel("force the application");
-    private final JLabel closeLabel3=new JLabel("to shut down!");
-    
+
+    private final JLabel closeLabel1 = new JLabel("Closing this window will");
+    private final JLabel closeLabel2 = new JLabel("force the application");
+    private final JLabel closeLabel3 = new JLabel("to shut down!");
+
     public static final String[] title = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     private JButton confirm = new JButton("Confirm");
@@ -82,39 +82,39 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     private final ImageIcon info = new ImageIcon(rsc.load("res/infoic.png"));
     private final ImageIcon red = new ImageIcon(rsc.load("res/red.png"));
     public final ImageIcon icon = new ImageIcon(rsc.load("res/icon.png"));
-    public JFrame frame=new JFrame("Meeting Scheduler");
-    
+    public JFrame frame = new JFrame("Meeting Scheduler");
+
     public final JLabel infoLabel = new JLabel(info);
-    
+
     public final Information inf = new Information();
-    
+
     public final JLabel resetLabel = new JLabel("Reset database?");
     public final JLabel startupLabel = new JLabel("Start MS on windows startup?");
-    
-    
+
     public PopupMenu menu;
     public MenuItem close;
     public MenuItem action;
-    public boolean trayed=false;
+    public boolean trayed = false;
 
     public GUIWindow() {
         initComponents();
     }
 
     private void initComponents() {
-        
+
         menu = new PopupMenu();
-        close = new MenuItem("Close");
         action = new MenuItem("Meeting Scheduler");
-        
-        close.addActionListener(this);
+        close = new MenuItem("Close");
+
         action.addActionListener(this);
-        
+        close.addActionListener(this);
+
+        menu.add(action);        
         menu.add(close);
-        menu.add(action);
-        
-        container=frame.getContentPane();
-       
+
+
+        container = frame.getContentPane();
+
         frame.setBounds(400, 100, 520, 550);
         frame.setDefaultCloseOperation(0);
         container.setLayout(cardLayout);
@@ -202,25 +202,25 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         verify.setBackground(null);
         verify.setForeground(Color.white);
         verify.setFocusable(false);
-        
+
         closeLabel1.setForeground(Color.white);
-        closeLabel1.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel1.setBounds(33,15,510,50);
-        
+        closeLabel1.setFont(new Font("Monospaced", Font.PLAIN, 25));
+        closeLabel1.setBounds(33, 15, 510, 50);
+
         closeLabel2.setForeground(Color.white);
-        closeLabel2.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel2.setBounds(60,55,510,50);
-        
+        closeLabel2.setFont(new Font("Monospaced", Font.PLAIN, 25));
+        closeLabel2.setBounds(60, 55, 510, 50);
+
         closeLabel3.setForeground(Color.white);
-        closeLabel3.setFont(new Font("Monospaced",Font.PLAIN,25));
-        closeLabel3.setBounds(125,95,510,50);
-        
-        startupLabel.setBounds(20,145,230,20);
+        closeLabel3.setFont(new Font("Monospaced", Font.PLAIN, 25));
+        closeLabel3.setBounds(125, 95, 510, 50);
+
+        startupLabel.setBounds(20, 145, 230, 20);
         startupLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         startupLabel.setForeground(new Color(88, 180, 255));
         startupLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         startupLabel.addMouseListener(this);
-               
+
         resetLabel.setBounds(270, 145, 150, 20);
         resetLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         resetLabel.setForeground(new Color(88, 180, 255));
@@ -234,12 +234,12 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         panel1.add(verify);
         panel1.add(confirm);
         panel1.add(tp);
-        
+
         panel1.setBackground(Color.black);
         panel2.setBackground(Color.black);
-        
-        container.add(panel1,"first");
-        container.add(panel2,"second");
+
+        container.add(panel1, "first");
+        container.add(panel2, "second");
     }
 
     private boolean isValidCharacter(char ch) {
@@ -274,10 +274,10 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                 for (int i = 0; i < COMPONENTS; i++) {
                     for (int j = 0; j < MAXIMUM_NUMBER_OF_MEETINGS; j++) {
                         if (timeField[i][j].isEnabled() && urlField[i][j].isEnabled()) {
-                            dataProvided = true;                            
+                            dataProvided = true;
                             String time = timeField[i][j].getText();
                             String url = urlField[i][j].getText();
-                            try{
+                            try {
                                 if (isTimeValid(time) && isUrlValid(url)) {
                                     timeArray[i][j] = getTime(wd.retrieveHour(time), wd.retrieveMinute(time));
                                     dotLabel[i][j].setIcon(green);
@@ -288,11 +288,11 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                                     dotLabel[i][j].setIcon(red);
                                     dotLabel[i][j].setToolTipText("Invalid information provieded!");
                                 }
-                            }catch(Exception ex){
-                                allDataCorrect=false;
+                            } catch (Exception ex) {
+                                allDataCorrect = false;
                                 System.out.println(ex);
                             }
-                        }    
+                        }
                     }
                 }
                 for (int i = 0; i < COMPONENTS; i++) {
@@ -318,11 +318,11 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         };
         thread.start();
     }
-    
-    private void swapValues(int index,int i,int j){
+
+    private void swapValues(int index, int i, int j) {
         long temp = timeArray[index][i];
-        timeArray[index][i]=timeArray[index][j];
-        timeArray[index][j]=temp;
+        timeArray[index][i] = timeArray[index][j];
+        timeArray[index][j] = temp;
         String tempTime = timeField[index][i].getText();
         timeField[index][i].setText(timeField[index][j].getText());
         timeField[index][j].setText(tempTime);
@@ -343,15 +343,15 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         }
         return true;
     }
-    
-    private long getTime(String hour,String minute){
-        int h=Integer.parseInt(hour);
-        int m=Integer.parseInt(minute);
-        Calendar time=Calendar.getInstance();
-        time.set(Calendar.HOUR_OF_DAY,h);
-        time.set(Calendar.MINUTE,m);
-        time.set(Calendar.SECOND,0);
-        time.set(Calendar.MILLISECOND,m);
+
+    private long getTime(String hour, String minute) {
+        int h = Integer.parseInt(hour);
+        int m = Integer.parseInt(minute);
+        Calendar time = Calendar.getInstance();
+        time.set(Calendar.HOUR_OF_DAY, h);
+        time.set(Calendar.MINUTE, m);
+        time.set(Calendar.SECOND, 0);
+        time.set(Calendar.MILLISECOND, m);
         return time.getTimeInMillis();
     }
 
@@ -413,12 +413,12 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
         if (e.getSource() == verify) {
             verifyData();
         }
-        
-        if(e.getSource()==action&&trayed){
-             frame.setVisible(true);
+
+        if (e.getSource() == action && trayed) {
+            frame.setVisible(true);
         }
-        
-        if(e.getSource()==close&&trayed){
+
+        if (e.getSource() == close && trayed) {
             int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?", "Meeting Scheduler", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 System.exit(0);
@@ -460,52 +460,52 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == infoLabel) {
-            if(inf.isVisible()){
+            if (inf.isVisible()) {
                 inf.setVisible(false);
-            }else{
+            } else {
                 inf.setVisible(true);
             }
         }
-        if(e.getSource()==resetLabel){
-            int opt=JOptionPane.showConfirmDialog(null,"Are you sure, you want to reset the database?","Reset database",JOptionPane.YES_NO_OPTION);
-            if(opt==JOptionPane.YES_OPTION){
-                if(new File(MainClass.DATABASE_LOCATION+MainClass.DATABASE_NAME).delete()){
-                    try{
-                        JNotification notification=new JNotification(JNotification.DONE_MESSAGE);
+        if (e.getSource() == resetLabel) {
+            int opt = JOptionPane.showConfirmDialog(null, "Are you sure, you want to reset the database?", "Reset database", JOptionPane.YES_NO_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                if (new File(MainClass.DATABASE_LOCATION + MainClass.DATABASE_NAME).delete()) {
+                    try {
+                        JNotification notification = new JNotification(JNotification.DONE_MESSAGE);
                         notification.send();
-                    }catch(Exception ex){
+                    } catch (Exception ex) {
                         System.out.println(ex);
                     }
                     int res = JOptionPane.showConfirmDialog(null, "For changes to take effect you'll need to restart Meeting Scheduler."
-                            + " Do you want to restart now?","Restart",JOptionPane.YES_NO_OPTION);
-                    if(res==JOptionPane.YES_OPTION){
+                            + " Do you want to restart now?", "Restart", JOptionPane.YES_NO_OPTION);
+                    if (res == JOptionPane.YES_OPTION) {
                         frame.setVisible(false);
-                        try{
+                        try {
                             Thread.sleep(2000);
-                        }catch(Exception ex){
+                        } catch (Exception ex) {
                             System.out.println(ex);
                         }
                         MainClass mc = new MainClass();
                     }
-                }else{
-                    try{
-                        JNotification notification=new JNotification(JNotification.ERROR_MESSAGE);
+                } else {
+                    try {
+                        JNotification notification = new JNotification(JNotification.ERROR_MESSAGE);
                         notification.send();
-                    }catch(Exception ex){
+                    } catch (Exception ex) {
                         System.out.println(ex);
                     }
                 }
             }
         }
-        if(e.getSource()==startupLabel){
-            String osName= System.getProperty("os.name");
-            if(osName.equalsIgnoreCase("windows 10")){
-                String dest=System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Meeting Scheduler.exe - Shortcut.lnk";
-                File dst=new File(dest);
-                if(!dst.exists()){
-                    int opt=JOptionPane.showConfirmDialog(null,"Do you want Meeting Scheduler to start on Windows startup?",
-                            "Meeting Scheduler",JOptionPane.YES_NO_OPTION);
-                    if(opt==JOptionPane.YES_OPTION){
+        if (e.getSource() == startupLabel) {
+            String osName = System.getProperty("os.name");
+            if (osName.equalsIgnoreCase("windows 10")) {
+                String dest = System.getProperty("user.home") + "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Meeting Scheduler.exe - Shortcut.lnk";
+                File dst = new File(dest);
+                if (!dst.exists()) {
+                    int opt = JOptionPane.showConfirmDialog(null, "Do you want Meeting Scheduler to start on Windows startup?",
+                            "Meeting Scheduler", JOptionPane.YES_NO_OPTION);
+                    if (opt == JOptionPane.YES_OPTION) {
                         try {
                             ShellLink.createLink("Meeting Scheduler.exe", dest);
                             JNotification notification = new JNotification(JNotification.DONE_MESSAGE);
@@ -518,14 +518,14 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
                                 notification.send();
                             } catch (Exception ex1) {
                                 System.out.println(ex1);
-                            }                            
+                            }
                         }
                     }
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(null, "Meeting Scheduler will start on windows startup.");
                 }
-            }else{
-                JOptionPane.showMessageDialog(null, "This feature requires Windows 10 to be the primary operating system of this pc!","Error",JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "This feature requires Windows 10 to be the primary operating system of this pc!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -571,11 +571,20 @@ public class GUIWindow implements ChangeListener, ActionListener, KeyListener, M
 
     @Override
     public void windowClosing(WindowEvent e) {
-        int opt=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?","Meeting Scheduler",JOptionPane.YES_NO_OPTION);
-        if(opt==JOptionPane.YES_OPTION){
-            System.exit(0);
+        if (trayed) {
+            int opt = JOptionPane.showConfirmDialog(null, "Do you want to minimize the app to system tray, or exit? (Choosing 'No' will shut down Meeting Scheduler)", "Meeting Scheduler", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                frame.setVisible(false);
+            } else if (opt == JOptionPane.NO_OPTION) {
+                System.exit(0);
+            }
+        } else {
+            int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the application?","Meeting Scheduler", JOptionPane.YES_NO_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } 
         }
-        
+
     }
 
     @Override

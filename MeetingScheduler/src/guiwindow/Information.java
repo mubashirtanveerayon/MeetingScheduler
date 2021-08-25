@@ -14,6 +14,8 @@ public class Information extends JFrame implements MouseListener{
     public JLabel linkStyle=new JLabel();
     private ResourceLoader rsc=new ResourceLoader();
     
+    public static final String VERSION = "1.4.1";
+    
     
     public Information(){
         this.setLayout(null);
@@ -33,7 +35,7 @@ public class Information extends JFrame implements MouseListener{
         this.add(inf1);
         
         ver = new JLabel();
-        ver.setText("Version 1.4.0");
+        ver.setText("Version "+VERSION);
         ver.setForeground(Color.white);
         ver.setFont(new Font("Aerial",Font.ITALIC,15));
         ver.setBounds(170,117,100,20);
